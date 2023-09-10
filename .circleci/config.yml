@@ -1,0 +1,221 @@
+# CircleCI's configuration
+#
+# Reference: https://circleci.com/docs/2.0/configuration-reference/
+
+version: 2.1
+orbs:
+  python: circleci/python@2.0.1
+jobs:
+  # Git jobs
+  # Check that the git history is clean and complies with our expectations
+  lint-git:
+    docker:
+      - image: cimg/python:3.10
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Install gitlint
+          command: |
+            pip install requests
+            pip install --user --upgrade gitlint
+      - run:
+          name: lint commit messages added to main
+          command: |
+              ~/.local/bin/gitlint --commits origin/main..HEAD
+
+  # Check that the CHANGELOG has been updated in the current branch
+  check-changelog:
+    docker:
+      - image: cimg/base:2022.04
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Check that the CHANGELOG has been modified in the current branch
+          command: |
+            git whatchanged --name-only --pretty="" origin..HEAD | grep CHANGELOG
+
+# Check that the CHANGELOG max line length does not exceed 80 characters
+  lint-changelog:
+    docker:
+      - image: debian:stretch
+    working_directory: ~/marsha
+    steps:
+      - checkout
+      - run:
+          name: Check CHANGELOG max line length
+          command: |
+            # Get the longuest line width (ignoring release links)
+            test $(cat CHANGELOG.md | grep -Ev "^\[.*\]: https://github.com/openfun" | wc -L) -le 80
+
+  # Run linters
+  lint:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Install development dependencies
+          command: pip install --user --upgrade ".[dev]"
+      - run:
+          name: Lint code with isort
+          command: ~/.local/bin/isort --check-only src tests
+      - run:
+          name: Lint code with black
+          command: ~/.local/bin/black --check src tests
+      - run:
+          name: Lint code with flake8
+          command: ~/.local/bin/flake8 src tests
+      - run:
+          name: Lint code with pylint
+          command: ~/.local/bin/pylint --rcfile=pylintrc src tests
+          environment:
+            DJANGO_SETTINGS_MODULE: tests.app.settings
+      - run:
+          name: Lint code with bandit
+          command: ~/.local/bin/bandit -c .bandit -qr src
+
+  # Packaging checks
+  check-manifest:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Install development dependencies
+          command: pip install --user --upgrade ".[dev]"
+      - run:
+          name: Check the MANIFEST.in
+          command: ~/.local/bin/check-manifest
+
+  # Run the test suite
+  tests:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip-dist
+          path-args: . tox
+          pypi-cache: true
+          venv-cache: false
+          # pip-dependency-file is only used for cache checksum
+          pip-dependency-file: tox.ini
+          pre-install-steps:
+            - run: pyenv install --skip-existing 3.8.13
+            - run: pyenv install --skip-existing 3.9.12
+            - run: pyenv install --skip-existing 3.10.4
+            - run: pyenv local 3.8.13 3.9.12 3.10.4
+      - run:
+          name: "Run tox"
+          command: tox --parallel 3
+      - store_artifacts:
+          path: htmlcov
+      - store_test_results:
+          path: test-reports
+
+  # Python packaging
+  python-package:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Build python package
+          command: python setup.py sdist bdist_wheel
+      # Persist build packages to the workspace
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+      # Store packages as artifacts to download/test them
+      - store_artifacts:
+          path: dist
+
+  # PyPI publishing
+  # Requires you defined both the TWINE_USERNAME & TWINE_PASSWORD secret
+  # environment variables in CircleCI UI (with your PyPI credentials)
+  pypi:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      # Restore built python packages
+      - attach_workspace:
+          at: .
+      - run:
+          name: List built packages
+          command: ls dist/*
+      - run:
+          name: Install twine
+          command: pip install --user --upgrade "twine"
+      - run:
+          name: Upload built packages to PyPI
+          command: ~/.local/bin/twine upload dist/*
+
+workflows:
+  version: 2
+
+  django-peertube-runner-connector:
+    jobs:
+      # Git jobs
+      #
+      # Check validity of git history
+      - lint-git:
+          filters:
+            tags:
+              only: /.*/
+
+      # Check changelog validity
+      - check-changelog:
+          filters:
+            branches:
+              ignore: main
+            tags:
+              ignore: /.*/
+      - lint-changelog:
+          filters:
+            branches:
+              ignore: main
+            tags:
+              ignore: /.*/
+
+      # Check code quality
+      - lint:
+          filters:
+            tags:
+              only: /.*/
+
+      # Check packaging
+      - check-manifest:
+          filters:
+            tags:
+              only: /.*/
+
+      # Run test suite
+      - tests:
+          filters:
+            tags:
+              only: /.*/
+
+      # Build the python package
+      - python-package:
+          requires:
+            - tests
+          filters:
+            tags:
+              only: /.*/
+
+      # PyPI publication.
+      #
+      # Publish python package to PYPI only if all build, lint and test jobs
+      # succeeded, and it has been tagged with a tag starting with the letter v
+      - pypi:
+          requires:
+            - python-package
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
