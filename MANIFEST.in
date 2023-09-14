@@ -1,0 +1,17 @@
+include CHANGELOG.md
+include LICENSE
+include README.md
+
+graft src/django_peertube_runner_connector
+
+prune tests
+
+global-exclude *.py[cod] __pycache__ *.so .*.swp *~
+
+exclude .bandit
+exclude .circleci/*
+exclude .gitlint
+exclude Makefile
+exclude lib/**
+exclude pylintrc
+exclude tox.ini
