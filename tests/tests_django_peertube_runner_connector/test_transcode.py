@@ -1,8 +1,8 @@
 """Tests for the "transcode.py" file of the django_peertube_runner_connector app"""
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
 import ffmpeg
 
@@ -24,6 +24,7 @@ class TestTranscode(TestCase):
         with self.assertRaises(VideoNotFoundError):
             transcode_video(
                 "test.mp4",
+                "video/new_video",
                 "https://example.com",
             )
 
@@ -39,6 +40,7 @@ class TestTranscode(TestCase):
 
         created_video = transcode_video(
             video_url,
+            "test_directory",
             "https://example.com",
         )
 

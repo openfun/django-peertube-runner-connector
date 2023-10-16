@@ -1,6 +1,7 @@
 """Example viewset to start a transcoding using the Django Peertube Runner Connector."""
 
 import logging
+import os
 from uuid import uuid4
 
 from rest_framework import viewsets
@@ -38,9 +39,12 @@ class TestVideoViewSet(viewsets.GenericViewSet):
             uploaded_video_file,
         )
 
+        file_name = os.path.basename(filename)  # myvideo.mp4
+        file = os.path.splitext(file_name)[0]  # myvideo
+        destination = f"{os.path.dirname(filename)}/{file}"
         domain = f"{request.scheme}://{request.get_host()}"
 
-        video = transcode_video(filename, domain)
+        video = transcode_video(filename, destination, domain)
 
         return Response(
             {
@@ -56,10 +60,11 @@ class TestVideoViewSet(viewsets.GenericViewSet):
     def transcode(self, request):
         """Endpoint to transcode a video file."""
         video_filename = request.data.get("path")
+        destination = request.data.get("destination")
         domain = f"{request.scheme}://{request.get_host()}"
 
         try:
-            video = transcode_video(video_filename, domain)
+            video = transcode_video(video_filename, destination, domain)
         except VideoNotFoundError:
             return Response(status=404)
 

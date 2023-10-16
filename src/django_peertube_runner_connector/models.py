@@ -216,6 +216,12 @@ class Video(models.Model):
         blank=True,
         help_text="Thumbnail filename on the storage",
     )
+    baseFilename = models.CharField(
+        max_length=255,
+        help_text="File used for new files related to the video",
+        null=True,
+        blank=True,
+    )
     createdAt = models.DateTimeField(auto_now_add=True, help_text="Creation At")
     updatedAt = models.DateTimeField(auto_now=True, help_text="Update At")
 

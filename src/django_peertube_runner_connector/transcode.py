@@ -1,6 +1,5 @@
 """Base function to start the transcoding process."""
 import logging
-import os
 
 from django.urls import reverse
 
@@ -24,7 +23,7 @@ class VideoNotFoundError(Exception):
     """Exception class for when transcoding cannot find a video in the storage."""
 
 
-def _process_transcoding(video: Video, video_path: str, video_url):
+def _process_transcoding(video: Video, video_path: str, video_url: str):
     """
     Create a video_file, thumbnails and transcoding jobs for a video.
     The request will be used to build the video download url.
@@ -49,13 +48,17 @@ def _process_transcoding(video: Video, video_path: str, video_url):
     )
 
 
-def transcode_video(file_path: str, domain: str):
+def transcode_video(
+    file_path: str, destination: str, domain: str, base_name: str = None
+):
     """
-    Transcodes a video file.
+    Transcodes a video file to a specified destination.
 
-    Args:
-        file_path (str): The name of the video file.
-        domain (str): The domain that will be used to download the video.
+    Parameters:
+        file_path (str): The path to the video file.
+        destination (str): The destination directory for the transcoded video.
+        domain (str): The domain name used to construct the download URL for peerTube runners.
+        base_name (str, optional): The base name for the transcoded video.
 
     Returns:
         Video: The transcoded video object.
@@ -66,11 +69,10 @@ def transcode_video(file_path: str, domain: str):
     if not video_storage.exists(file_path):
         raise VideoNotFoundError("Video file does not exist.")
 
-
     video = Video.objects.create(
         state=build_next_video_state(),
-        # myvideo-1696602697/
-        directory=os.path.dirname(file_path)
+        directory=destination,
+        baseFilename=base_name,
     )
 
     video_url = domain + reverse("runner-jobs-download_video_file", args=(video.uuid,))
