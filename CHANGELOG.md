@@ -9,6 +9,7 @@ and this project adheres to
 
 ## [Unreleased]
 
+- Add destination and base_name parameters for transcode function
 - refacto download url for peertube runners
 - demo app now create files in storage directory
 - add django_peertube_runner_connector app

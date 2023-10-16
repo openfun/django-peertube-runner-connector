@@ -35,9 +35,11 @@ def generate_web_video_filename(resolution: int, extname: str):
     return str(uuid4()) + "-" + str(resolution) + extname
 
 
-def generate_hls_video_filename(resolution: int):
+def generate_hls_video_filename(resolution: int, basename: str = None):
     """Generate a filename for a hls video."""
-    return f"{str(uuid4())}-{str(resolution)}-fragmented.mp4"
+    basename = basename or str(uuid4())
+
+    return f"{basename}-{str(resolution)}-fragmented.mp4"
 
 
 def get_hls_resolution_playlist_filename(video_filename: str):

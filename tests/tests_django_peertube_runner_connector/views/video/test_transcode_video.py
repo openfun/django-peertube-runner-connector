@@ -1,4 +1,5 @@
 """Tests for the Video transcode API."""
+import os
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -59,7 +60,7 @@ class TranscodeVideoAPITest(TestCase):
 
             response = self.client.post(
                 "/videos/transcode",
-                data={"path": filename},
+                data={"path": filename, "destination": os.path.dirname(filename)},
             )
             self.assertEqual(response.status_code, 200)
 

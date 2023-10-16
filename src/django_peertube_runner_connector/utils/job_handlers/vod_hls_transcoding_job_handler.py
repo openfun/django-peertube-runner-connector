@@ -72,7 +72,10 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         resolution = runner_job.payload["output"]["resolution"]
 
         filename = video_storage.save(
-            get_video_directory(video, generate_hls_video_filename(resolution)),
+            get_video_directory(
+                video,
+                generate_hls_video_filename(resolution, video.baseFilename),
+            ),
             uploaded_video_file,
         )
 
@@ -95,7 +98,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             video=video,
             video_file=video_file,
         )
-        
+
         on_transcoding_ended(
             move_video_to_next_state=True,
             video=video,

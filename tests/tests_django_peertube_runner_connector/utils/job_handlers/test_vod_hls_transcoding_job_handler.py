@@ -133,7 +133,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         handler = VODHLSTranscodingJobHandler()
         handler.specific_complete(runner_job, result_payload=result_payload)
 
-        mock_generate_hls.assert_called_once_with("720")
+        mock_generate_hls.assert_called_once_with("720", None)
 
         mock_build_new_file.assert_called_once_with(
             video=self.video,
