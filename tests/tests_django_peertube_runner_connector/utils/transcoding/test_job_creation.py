@@ -115,10 +115,8 @@ class JobCreationTestCase(TestCase):
         mocked_class = Mock()
         mock_job_handler.return_value = mocked_class
 
-        mock_build_video_url = Mock()
-
         create_transcoding_jobs(
-            self.video, self.video_file, mock_build_video_url, probe_response
+            self.video, self.video_file, "video_url", probe_response
         )
 
         mocked_class.create.assert_called_with(
@@ -126,7 +124,7 @@ class JobCreationTestCase(TestCase):
             resolution=540,
             fps=30,
             depends_on_runner_job=None,
-            build_video_url=mock_build_video_url,
+            video_url="video_url",
         )
 
         mock_build_resolution.assert_called_with(
@@ -135,7 +133,7 @@ class JobCreationTestCase(TestCase):
             input_video_fps=30,
             has_audio=True,
             main_runner_job=mocked_class.create(),
-            build_video_url=mock_build_video_url,
+            video_url="video_url",
         )
 
     @patch(
@@ -149,15 +147,13 @@ class JobCreationTestCase(TestCase):
 
         main_runner_job = RunnerJobFactory(type="vod-hls-transcoding")
 
-        mock_build_video_url = Mock()
-
         build_lower_resolution_job_payloads(
             video=self.video,
             input_video_resolution=540,
             input_video_fps=30,
             has_audio=True,
             main_runner_job=main_runner_job,
-            build_video_url=mock_build_video_url,
+            video_url="video_url",
         )
 
         mocked_class.create.assert_has_calls(
@@ -167,14 +163,14 @@ class JobCreationTestCase(TestCase):
                     resolution=360,
                     fps=30,
                     depends_on_runner_job=main_runner_job,
-                    build_video_url=mock_build_video_url,
+                    video_url="video_url",
                 ),
                 call(
                     video=self.video,
                     resolution=480,
                     fps=30,
                     depends_on_runner_job=main_runner_job,
-                    build_video_url=mock_build_video_url,
+                    video_url="video_url",
                 ),
             ]
         )

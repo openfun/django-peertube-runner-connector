@@ -73,7 +73,7 @@ class DownloadVideoRunnerJobAPITest(TestCase):
         """Should not be able to request the list."""
         self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
         response = self.client.post(
-            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/"
+            "/api/v1/runners/jobs/"
             "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
             data={
                 "runnerToken": "invalid_token",
@@ -107,7 +107,7 @@ class DownloadVideoRunnerJobAPITest(TestCase):
                 fake_storage,
             ):
                 response = self.client.post(
-                    "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/"
+                    "/api/v1/runners/jobs/"
                     "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
                     data={
                         "runnerToken": "runnerToken",

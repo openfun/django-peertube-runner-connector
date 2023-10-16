@@ -101,6 +101,5 @@ class TranscodeVideoAPITest(TestCase):
             self.assertEqual(
                 runner_job.payload["input"]["videoFileUrl"],
                 "http://testserver/api/v1/runners/jobs/"
-                f"{runner_job.uuid}/files/videos/"
-                f"{created_video.uuid}/max-quality",
+                f"files/videos/{created_video.uuid}/max-quality",
             )

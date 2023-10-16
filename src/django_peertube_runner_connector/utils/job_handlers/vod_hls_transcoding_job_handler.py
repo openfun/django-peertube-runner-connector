@@ -30,14 +30,12 @@ logger = logging.getLogger(__name__)
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
     """Handler for vod hls transcoding jobs."""
 
-    def create(
-        self, video: Video, resolution, fps, depends_on_runner_job, build_video_url
-    ):
+    def create(self, video: Video, resolution, fps, depends_on_runner_job, video_url):
         job_uuid = uuid.uuid4()
 
         payload = {
             "input": {
-                "videoFileUrl": build_video_url(job_uuid, video.uuid),
+                "videoFileUrl": video_url,
             },
             "output": {
                 "resolution": resolution,
@@ -97,7 +95,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             video=video,
             video_file=video_file,
         )
-
+        
         on_transcoding_ended(
             move_video_to_next_state=True,
             video=video,

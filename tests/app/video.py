@@ -38,7 +38,9 @@ class TestVideoViewSet(viewsets.GenericViewSet):
             uploaded_video_file,
         )
 
-        video = transcode_video(filename, request)
+        domain = f"{request.scheme}://{request.get_host()}"
+
+        video = transcode_video(filename, domain)
 
         return Response(
             {
@@ -54,9 +56,10 @@ class TestVideoViewSet(viewsets.GenericViewSet):
     def transcode(self, request):
         """Endpoint to transcode a video file."""
         video_filename = request.data.get("path")
+        domain = f"{request.scheme}://{request.get_host()}"
 
         try:
-            video = transcode_video(video_filename, request)
+            video = transcode_video(video_filename, domain)
         except VideoNotFoundError:
             return Response(status=404)
 

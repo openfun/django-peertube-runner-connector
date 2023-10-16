@@ -77,7 +77,7 @@ def build_lower_resolution_job_payloads(
     input_video_fps,
     has_audio,
     main_runner_job,
-    build_video_url,
+    video_url,
 ):
     """Build lower resolution runner job."""
     resolutions_enabled = compute_resolutions_to_transcode(
@@ -99,12 +99,12 @@ def build_lower_resolution_job_payloads(
             resolution=resolution,
             fps=fps,
             depends_on_runner_job=main_runner_job,
-            build_video_url=build_video_url,
+            video_url=video_url,
         )
 
 
 def create_transcoding_jobs(
-    video: Video, video_file: VideoFile, build_video_url, existing_probe=None
+    video: Video, video_file: VideoFile, video_url, existing_probe=None
 ):
     """Create transcoding jobs."""
     setting_transcoding = get_video_transcoding_fps_settings()
@@ -134,7 +134,7 @@ def create_transcoding_jobs(
         resolution=max_resolution,
         fps=fps,
         depends_on_runner_job=None,
-        build_video_url=build_video_url,
+        video_url=video_url,
     )
 
     build_lower_resolution_job_payloads(
@@ -143,5 +143,5 @@ def create_transcoding_jobs(
         input_video_fps=input_fps,
         has_audio=has_audio,
         main_runner_job=main_runner_job,
-        build_video_url=build_video_url,
+        video_url=video_url,
     )
