@@ -9,5 +9,6 @@ and this project adheres to
 
 ## [Unreleased]
 
+- demo app now create files in storage directory
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 

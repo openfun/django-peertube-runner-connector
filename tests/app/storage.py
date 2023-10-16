@@ -15,3 +15,5 @@ class MyCustomFileSystemVideoStorage(FileSystemStorage):
 
     def url(self, name):
         return self.path(name)
+
+    location = "storage"
