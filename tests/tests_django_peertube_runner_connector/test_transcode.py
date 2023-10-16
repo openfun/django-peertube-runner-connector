@@ -21,12 +21,10 @@ class TestTranscode(TestCase):
     @patch("django_peertube_runner_connector.transcode._process_transcoding")
     def test_transcode_a_not_found_video(self, mock_process):
         """Should throw a VideoNotFoundError exception."""
-        fake_request = RequestFactory().get("/path/to/endpoint")
-
         with self.assertRaises(VideoNotFoundError):
             transcode_video(
                 "test.mp4",
-                request=fake_request,
+                "https://example.com",
             )
 
         mock_process.assert_not_called()
@@ -34,7 +32,6 @@ class TestTranscode(TestCase):
     @patch("django_peertube_runner_connector.transcode._process_transcoding")
     def test_transcode(self, mock_process):
         """Should start the transcoding process."""
-        fake_request = RequestFactory().get("/path/to/endpoint")
         simple_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
@@ -42,13 +39,16 @@ class TestTranscode(TestCase):
 
         created_video = transcode_video(
             video_url,
-            request=fake_request,
+            "https://example.com",
         )
 
         self.assertEqual(created_video.directory, "test_directory")
 
         mock_process.assert_called_with(
-            video=created_video, video_path=video_url, build_video_url=ANY
+            video=created_video,
+            video_path=video_url,
+            video_url="https://example.com/api/v1/runners/jobs/"
+            f"files/videos/{created_video.uuid}/max-quality",
         )
 
     @patch.object(ffmpeg, "probe")
@@ -66,7 +66,6 @@ class TestTranscode(TestCase):
         video_url = video_storage.save("test_directory/file.mp4", simple_file)
         video = VideoFactory(directory="test_directory")
         video_file = VideoFileFactory(filename=video_url, video=video)
-        mock_build_video = Mock()
         mock_thumbnails.return_value = "thumbnail.jpg"
         mock_duration.return_value = 900
         mock_build.return_value = video_file
@@ -74,7 +73,7 @@ class TestTranscode(TestCase):
         _process_transcoding(
             video=video,
             video_path=video_url,
-            build_video_url=mock_build_video,
+            video_url="download_video_url",
         )
 
         mock_probe.assert_called_with("/test_directory/file.mp4")
@@ -89,7 +88,7 @@ class TestTranscode(TestCase):
             video=video,
             video_file=video_file,
             existing_probe=mock_probe.return_value,
-            build_video_url=mock_build_video,
+            video_url="download_video_url",
         )
 
         self.assertEqual(video.duration, 900)

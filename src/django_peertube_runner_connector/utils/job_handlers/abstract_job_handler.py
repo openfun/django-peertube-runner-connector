@@ -28,9 +28,7 @@ class AbstractJobHandler(ABC):
     """Base class for job handlers."""
 
     @abstractmethod
-    def create(
-        self, video: Video, resolution, fps, depends_on_runner_job, build_video_url
-    ):
+    def create(self, video: Video, resolution, fps, depends_on_runner_job, video_url):
         """This method should be implemented by subclasses."""
 
     def create_runner_job(

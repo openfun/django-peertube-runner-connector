@@ -178,21 +178,19 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        detail=True,
+        detail=False,
         methods=["post"],
         url_path="files/videos/(?P<video_id>[^/.]+)/max-quality",
         url_name="download_video_file",
     )
-    def download_video_file(self, request, uuid=None, video_id=None):
+    def download_video_file(self, request, video_id=None):
         """Endpoint to download a video file."""
         runner = self._get_runner_from_token(request)
-        job = self._get_job_from_uuid(uuid)
         video = self._get_video_from_uuid(video_id)
 
         logger.info(
-            "Get max quality file of video %s of job %s for runner %s",
+            "Get max quality file of video %s for runner %s",
             video.uuid,
-            job.uuid,
             runner.name,
         )
 

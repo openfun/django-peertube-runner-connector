@@ -24,7 +24,7 @@ class VideoNotFoundError(Exception):
     """Exception class for when transcoding cannot find a video in the storage."""
 
 
-def _process_transcoding(video: Video, video_path: str, build_video_url):
+def _process_transcoding(video: Video, video_path: str, video_url):
     """
     Create a video_file, thumbnails and transcoding jobs for a video.
     The request will be used to build the video download url.
@@ -45,17 +45,17 @@ def _process_transcoding(video: Video, video_path: str, build_video_url):
         video=video,
         video_file=video_file,
         existing_probe=probe,
-        build_video_url=build_video_url,
+        video_url=video_url,
     )
 
 
-def transcode_video(filename: str, request):
+def transcode_video(file_path: str, domain: str):
     """
     Transcodes a video file.
 
     Args:
-        filename (str): The name of the video file.
-        request: The HTTP request associated with the transcoding process.
+        file_path (str): The name of the video file.
+        domain (str): The domain that will be used to download the video.
 
     Returns:
         Video: The transcoded video object.
@@ -63,22 +63,18 @@ def transcode_video(filename: str, request):
     Raises:
         VideoNotFoundError: If the video file does not exist.
     """
-    if not video_storage.exists(filename):
+    if not video_storage.exists(file_path):
         raise VideoNotFoundError("Video file does not exist.")
+
 
     video = Video.objects.create(
         state=build_next_video_state(),
-        directory=os.path.dirname(filename),
+        # myvideo-1696602697/
+        directory=os.path.dirname(file_path)
     )
 
-    def build_video_url(job_uuid, video_uuid):
-        """Return an api endpoint to download the video file."""
-        return request.build_absolute_uri(
-            reverse("runner-jobs-download_video_file", args=(job_uuid, video_uuid))
-        )
+    video_url = domain + reverse("runner-jobs-download_video_file", args=(video.uuid,))
 
-    _process_transcoding(
-        video=video, video_path=filename, build_video_url=build_video_url
-    )
+    _process_transcoding(video=video, video_path=file_path, video_url=video_url)
 
     return video

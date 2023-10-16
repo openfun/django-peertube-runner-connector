@@ -37,7 +37,11 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         """Should be able to create a VOD_HLS_TRANSCODING runner job."""
         handler = VODHLSTranscodingJobHandler()
         runner_job = handler.create(
-            self.video, "720", 30, None, lambda x, y: "test_url"
+            self.video,
+            "720",
+            30,
+            None,
+            "test_url",
         )
 
         self.video.refresh_from_db()

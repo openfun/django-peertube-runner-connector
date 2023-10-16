@@ -75,7 +75,7 @@ class UploadVideoAPITest(TestCase):
             created_video = Video.objects.first()
 
             _, video_files = video_storage.listdir(created_video.directory)
-            self.assertEqual(len(video_files), 2)  # uploaded video + thumbnail
+            self.assertEqual(len(video_files), 1)  # thumbnail
             self.assertEqual(Video.objects.count(), 1)
 
             created_video = Video.objects.first()
@@ -89,6 +89,5 @@ class UploadVideoAPITest(TestCase):
             self.assertEqual(
                 runner_job.payload["input"]["videoFileUrl"],
                 "http://testserver/api/v1/runners/jobs/"
-                f"{runner_job.uuid}/files/videos/"
-                f"{created_video.uuid}/max-quality",
+                f"files/videos/{created_video.uuid}/max-quality",
             )
