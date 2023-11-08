@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.2.0] - 2023-11-08
+
 ### Fixed
 
 - remove the unnecessary dependency "pins"
@@ -23,5 +25,6 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.1.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.2.0...main
+[0.2.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/openfun/django-peertube-runner-connector/compare/9e5f8ab06a66d500614003ac0cbf0bb874304de0...v0.1.0
