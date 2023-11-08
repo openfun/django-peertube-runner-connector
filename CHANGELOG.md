@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- remove the unnecessary dependency "pins"
+
 ## [0.1.0] - 2023-10-30
 
 ### Added

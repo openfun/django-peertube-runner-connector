@@ -7,7 +7,6 @@ from uuid import uuid4
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-import shortuuid
 
 from django_peertube_runner_connector.models import Video
 from django_peertube_runner_connector.serializers import RunnerJobSerializer
@@ -50,7 +49,6 @@ class TestVideoViewSet(viewsets.GenericViewSet):
             {
                 "video": {
                     "id": video.id,
-                    "shortUUID": shortuuid.uuid(str(video.uuid)),
                     "uuid": video.uuid,
                 }
             }
@@ -72,7 +70,6 @@ class TestVideoViewSet(viewsets.GenericViewSet):
             {
                 "video": {
                     "id": video.id,
-                    "shortUUID": shortuuid.uuid(str(video.uuid)),
                     "uuid": video.uuid,
                 }
             }
