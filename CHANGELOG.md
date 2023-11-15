@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Changed
+
+- Add settings options for "videos" storages
+
 ## [0.2.0] - 2023-11-08
 
 ### Fixed
