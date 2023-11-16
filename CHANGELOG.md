@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Fixed
+
+- videos storage does not remove settings
+
 ## [0.3.0] - 2023-11-15
 
 ## Changed

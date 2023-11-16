@@ -10,8 +10,8 @@ class ConfiguredStorage(LazyObject):
     def _setup(self):
         """Setup the video storage."""
         params = settings.STORAGES["videos"]
-        backend = params.pop("BACKEND")
-        options = params.pop("OPTIONS", {})
+        backend = params.get("BACKEND")
+        options = params.get("OPTIONS", {})
         self._wrapped = storage.get_storage_class(backend)(**options)
 
 
