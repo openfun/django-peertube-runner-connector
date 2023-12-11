@@ -61,7 +61,7 @@ lint-isort:  ## automatically re-arrange python imports in code base
 
 lint-pylint:  ## Run the pylint tool
 	@echo "$(BOLD)Running pylint$(RESET)"
-	DJANGO_SETTINGS_MODULE=tests.app.settings DJANGO_CONFIGURATION=Test pylint --rcfile=pylintrc src tests
+	DJANGO_SETTINGS_MODULE=app.settings DJANGO_CONFIGURATION=Test pylint --rcfile=pylintrc src tests/tests_django_peertube_runner_connector tests/app
 .PHONY: lint-pylint
 
 lint-bandit: ## lint back-end python sources with bandit

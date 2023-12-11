@@ -1,8 +1,5 @@
 """Tests for the Runner Job download API."""
-import tempfile
-from unittest.mock import patch
 
-from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
@@ -13,6 +10,7 @@ from django_peertube_runner_connector.factories import (
     VideoFileFactory,
 )
 from django_peertube_runner_connector.models import RunnerJobState, RunnerJobType
+from django_peertube_runner_connector.storage import video_storage
 
 
 # We don't enforce arguments documentation in tests
@@ -90,28 +88,19 @@ class DownloadVideoRunnerJobAPITest(TestCase):
             "file.mp4", b"file_content", content_type="video/mp4"
         )
 
-        with tempfile.TemporaryDirectory(prefix="video_temp_dir") as temp_dir:
-            fake_storage = get_storage_class(
-                "django.core.files.storage.FileSystemStorage"
-            )(temp_dir)
+        filename = video_storage.save(
+            "video_test.mp4",
+            video_to_download,
+        )
 
-            filename = fake_storage.save(
-                "video_test.mp4",
-                video_to_download,
-            )
+        VideoFileFactory(video=self.video, filename=filename)
 
-            VideoFileFactory(video=self.video, filename=filename)
-
-            with patch(
-                "django_peertube_runner_connector.views.runner_job.video_storage",
-                fake_storage,
-            ):
-                response = self.client.post(
-                    "/api/v1/runners/jobs/"
-                    "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
-                    data={
-                        "runnerToken": "runnerToken",
-                    },
-                )
+        response = self.client.post(
+            "/api/v1/runners/jobs/"
+            "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
 
         self.assertEqual(response.status_code, 200)

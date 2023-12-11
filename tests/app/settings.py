@@ -202,10 +202,10 @@ class Test(Base):
 
     STORAGES = {
         "default": {
-            "BACKEND": "tests_django_peertube_runner_connector.storage_testing.TestStorage",
+            "BACKEND": "django.core.files.storage.InMemoryStorage",
         },
         "videos": {
-            "BACKEND": "tests_django_peertube_runner_connector.storage_testing.TestStorage",
+            "BACKEND": "django.core.files.storage.InMemoryStorage",
         },
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",

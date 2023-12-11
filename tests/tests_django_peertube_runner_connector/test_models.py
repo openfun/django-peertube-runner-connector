@@ -177,7 +177,7 @@ class TestModel(TestCase):
 
         self.video.remove_all_web_video_files()
 
-        mock_storage.delete.has_calls(
+        mock_storage.delete.assert_has_calls(
             [
                 call(video_file1.filename),
                 call(video_file2.filename),
