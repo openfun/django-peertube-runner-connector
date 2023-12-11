@@ -13,6 +13,10 @@ and this project adheres to
 
 - Support django 5.0
 
+## Changed
+
+- Transcoding ended callback also called when transcoding failed
+
 ## [0.3.1] - 2023-11-16
 
 ## Fixed
