@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+- Support django 5.0
+
 ## [0.3.1] - 2023-11-16
 
 ## Fixed

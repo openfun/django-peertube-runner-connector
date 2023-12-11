@@ -28,7 +28,6 @@ def get_video_stream_dimensions_info(path: str, existing_probe=None):
     """Return the video stream dimensions info."""
 
     if video_stream := get_video_stream(path=path, existing_probe=existing_probe):
-
         return {
             "width": video_stream["width"],
             "height": video_stream["height"],

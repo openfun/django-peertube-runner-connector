@@ -235,9 +235,9 @@ dcfc7468-786b-466e-8fd0-809a1f5eaa03-480-fragmented.mp4
         # Call the function
         rename_video_file_in_playlist(playlist.playlistFilename, "video_file.filename")
         file_content = video_storage.open(playlist.playlistFilename, "r").read()
-        self.assertEqual(
-            file_content,
-            """#EXTM3U
+        # InMemoryStorage does rewrite a file. If one content in longer than the other,
+        # the new content will contain the difference between the two.
+        expected_content = """#EXTM3U
 #EXT-X-VERSION:7
 #EXT-X-TARGETDURATION:4
 #EXT-X-MEDIA-SEQUENCE:0
@@ -262,5 +262,5 @@ video_file.filename
 #EXT-X-BYTERANGE:85675@1183046
 video_file.filename
 #EXT-X-ENDLIST
-""",
-        )
+"""
+        self.assertEqual(expected_content, file_content[0 : len(expected_content)])

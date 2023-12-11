@@ -1,7 +1,7 @@
 # django-peertube-runner-connector: A django application to connect to a peertube runner and transcode videos 
 
-[![Python version](https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11%20-blue.svg)](https://www.python.org/)
-[![Django version](https://img.shields.io/badge/Django-3.2%20|%204.2-green.svg)](https://www.djangoproject.com/)
+[![Python version](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
+[![Django version](https://img.shields.io/badge/Django-4.2%20|%205.0%20-green.svg)](https://www.djangoproject.com/)
 [![CircleCI](https://circleci.com/gh/openfun/django-peertube-runner-connector/tree/main.svg?style=svg)](https://circleci.com/gh/openfun/django-peertube-runner-connector/tree/main)
 
 ## Overview 

@@ -52,7 +52,7 @@ jobs:
   # Run linters
   lint:
     environment:
-      DJANGO_SETTINGS_MODULE: tests.app.settings
+      DJANGO_SETTINGS_MODULE: app.settings
 
     docker:
       - image: cimg/python:3.11
@@ -72,9 +72,9 @@ jobs:
           command: ~/.local/bin/flake8 src tests
       - run:
           name: Lint code with pylint
-          command: ~/.local/bin/pylint --rcfile=pylintrc src tests
+          command: ~/.local/bin/pylint --rcfile=pylintrc src tests/tests_django_peertube_runner_connector tests/app
           environment:
-            DJANGO_SETTINGS_MODULE: tests.app.settings
+            DJANGO_SETTINGS_MODULE: app.settings
             DJANGO_CONFIGURATION: Test
       - run:
           name: Lint code with bandit
@@ -107,11 +107,10 @@ jobs:
           # pip-dependency-file is only used for cache checksum
           pip-dependency-file: tox.ini
           pre-install-steps:
-            - run: pyenv install --skip-existing 3.8
-            - run: pyenv install --skip-existing 3.9
             - run: pyenv install --skip-existing 3.10
             - run: pyenv install --skip-existing 3.11
-            - run: pyenv local 3.8 3.9 3.10 3.11
+            - run: pyenv install --skip-existing 3.12
+            - run: pyenv local 3.10 3.11 3.12
       - run:
           name: "Run tox"
           command: tox --parallel 3
