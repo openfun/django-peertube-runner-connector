@@ -109,8 +109,8 @@ TRANSCODING_FPS_KEEP_ORIGIN_FPS_RESOLUTION_MIN = 720
 # Max number of times a job can fail before being marked as failed
 TRANSCODING_RUNNER_MAX_FAILURE = 5
 
-# The callback path to a function that will be called when a video is published
-TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = ""
+# The callback path to a function that will be called when a video transcoding ended
+TRANSCODING_ENDED_CALLBACK_PATH = ""
 
 # The django-peertube-runner-connector app uses the django storage system to store the transcoded videos.
 # It uses the "videos" storage where you can configure the storage backend you want to use.

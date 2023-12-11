@@ -10,11 +10,11 @@ from django_peertube_runner_connector.utils.video_state import (
     move_to_failed_transcoding_state,
     move_to_next_state,
     move_to_published_state,
-    video_is_published,
+    transcoding_ended,
 )
 
 
-mock_callback_video_published = Mock()
+mock_transcoding_ended_callback = Mock()
 
 
 class VideoStateTestCase(TestCase):
@@ -23,7 +23,7 @@ class VideoStateTestCase(TestCase):
     def setUp(self):
         """Create a video."""
         self.video = VideoFactory()
-        mock_callback_video_published.reset_mock()
+        mock_transcoding_ended_callback.reset_mock()
 
     def test_build_next_video_state(self):
         """Should return the next video state depending on the current."""
@@ -63,13 +63,13 @@ class VideoStateTestCase(TestCase):
             build_next_video_state(VideoState.TO_EDIT), VideoState.PUBLISHED
         )
 
-    @patch("django_peertube_runner_connector.utils.video_state.video_is_published")
-    def test_move_to_next_state(self, mock_is_published):
-        """If video is published, should call the video_is_published function"""
+    @patch("django_peertube_runner_connector.utils.video_state.transcoding_ended")
+    def test_move_to_next_state(self, mock_transcoding_ended):
+        """If video is published, should call the transcoding_ended function"""
         self.video.state = VideoState.PUBLISHED
         self.video.save()
-        mock_is_published(self.video)
-        mock_is_published.assert_called_once_with(self.video)
+        mock_transcoding_ended(self.video)
+        mock_transcoding_ended.assert_called_once_with(self.video)
 
     @patch("django_peertube_runner_connector.utils.video_state.build_next_video_state")
     @patch("django_peertube_runner_connector.utils.video_state.move_to_published_state")
@@ -93,7 +93,8 @@ class VideoStateTestCase(TestCase):
         mock_build.assert_called_once_with(VideoState.TO_TRANSCODE)
         mock_move.assert_not_called()
 
-    def test_move_to_failed_transcoding_state(self):
+    @patch("django_peertube_runner_connector.utils.video_state.transcoding_ended")
+    def test_move_to_failed_transcoding_state(self, mock_transcoding_ended):
         """Should  move to a failed transcoding state."""
         self.video.state = VideoState.TO_TRANSCODE
         self.video.save()
@@ -101,8 +102,12 @@ class VideoStateTestCase(TestCase):
         move_to_failed_transcoding_state(self.video)
 
         self.assertEqual(self.video.state, VideoState.TRANSCODING_FAILED)
+        mock_transcoding_ended.assert_called_once_with(self.video)
 
-    def test_move_to_failed_transcoding_state_already_failed(self):
+    @patch("django_peertube_runner_connector.utils.video_state.transcoding_ended")
+    def test_move_to_failed_transcoding_state_already_failed(
+        self, mock_transcoding_ended
+    ):
         """If the video is already in a failed transcoding state, do nothing."""
         self.video.state = VideoState.TRANSCODING_FAILED
         self.video.save()
@@ -110,42 +115,43 @@ class VideoStateTestCase(TestCase):
         move_to_failed_transcoding_state(self.video)
 
         self.assertEqual(self.video.state, VideoState.TRANSCODING_FAILED)
+        mock_transcoding_ended.assert_not_called()
 
-    @patch("django_peertube_runner_connector.utils.video_state.video_is_published")
-    def test_move_to_published_state(self, mock_video_is_published):
+    @patch("django_peertube_runner_connector.utils.video_state.transcoding_ended")
+    def test_move_to_published_state(self, mock_transcoding_ended):
         """Should move to a published state."""
         move_to_published_state(self.video)
 
         self.assertEqual(self.video.state, VideoState.PUBLISHED)
-        mock_video_is_published.assert_called_once_with(self.video)
+        mock_transcoding_ended.assert_called_once_with(self.video)
 
     @override_settings(
-        TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH="tests_django_peertube_runner_connector."
-        "utils.test_video_state.mock_callback_video_published"
+        TRANSCODING_ENDED_CALLBACK_PATH="tests_django_peertube_runner_connector."
+        "utils.test_video_state.mock_transcoding_ended_callback"
     )
-    def test_video_is_published(self):
+    def test_transcoding_ended(self):
         """Should call the video callback defined in settings."""
-        video_is_published(self.video)
+        transcoding_ended(self.video)
 
-        mock_callback_video_published.assert_called_once_with(self.video)
-        mock_callback_video_published.reset_mock()
+        mock_transcoding_ended_callback.assert_called_once_with(self.video)
+        mock_transcoding_ended_callback.reset_mock()
 
-    @override_settings(TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH="")
+    @override_settings(TRANSCODING_ENDED_CALLBACK_PATH="")
     @patch("django_peertube_runner_connector.utils.video_state.logger")
-    def test_video_is_published_no_callback(self, mock_logger):
+    def test_transcoding_ended_no_callback(self, mock_logger):
         """Should do nothing."""
-        video_is_published(self.video)
+        transcoding_ended(self.video)
 
         mock_logger.assert_not_called()
-        mock_callback_video_published.assert_not_called()
+        mock_transcoding_ended_callback.assert_not_called()
 
-    @override_settings(TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH="fakecallback.test")
+    @override_settings(TRANSCODING_ENDED_CALLBACK_PATH="fakecallback.test")
     @patch("django_peertube_runner_connector.utils.video_state.logger")
-    def test_video_is_published_wrong_callback(self, mock_logger):
+    def test_transcoding_ended_wrong_callback(self, mock_logger):
         """Should do nothing and raise a warning."""
-        video_is_published(self.video)
+        transcoding_ended(self.video)
 
         mock_logger.error.assert_called_with(
-            "Error importing video_is_published callback.",
+            "Error importing transcoding_ended callback.",
         )
-        mock_callback_video_published.assert_not_called()
+        mock_transcoding_ended_callback.assert_not_called()

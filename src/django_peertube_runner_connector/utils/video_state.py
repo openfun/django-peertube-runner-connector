@@ -12,14 +12,14 @@ from django_peertube_runner_connector.models import Video, VideoState
 logger = logging.getLogger(__name__)
 
 
-def video_is_published(video: Video):
-    """Call the video_is_published callback if it exists."""
-    if callback_path := settings.TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH:
+def transcoding_ended(video: Video):
+    """Call the transcoding_ended callback if it exists."""
+    if callback_path := settings.TRANSCODING_ENDED_CALLBACK_PATH:
         try:
             callback = import_string(callback_path)
             callback(video)
         except ImportError:
-            logger.error("Error importing video_is_published callback.")
+            logger.error("Error importing transcoding_ended callback.")
 
 
 def build_next_video_state(current_state: VideoState = None):
@@ -44,7 +44,7 @@ def move_to_next_state(video: Video):
 
     # Already in its final state
     if video.state == VideoState.PUBLISHED:
-        video_is_published(video)
+        transcoding_ended(video)
         return
 
     if build_next_video_state(video.state) == VideoState.PUBLISHED:
@@ -56,6 +56,7 @@ def move_to_failed_transcoding_state(video: Video):
     if video.state != VideoState.TRANSCODING_FAILED:
         video.state = VideoState.TRANSCODING_FAILED
         video.save()
+        transcoding_ended(video)
 
 
 def move_to_published_state(video: Video):
@@ -64,4 +65,4 @@ def move_to_published_state(video: Video):
 
     video.state = VideoState.PUBLISHED
     video.save()
-    video_is_published(video)
+    transcoding_ended(video)
