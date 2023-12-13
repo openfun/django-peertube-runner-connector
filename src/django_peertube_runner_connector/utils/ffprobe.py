@@ -60,10 +60,12 @@ def get_video_stream_fps(probe):
         frames, seconds = values_text.split("/")
         if not frames or not seconds:
             continue
-
-        result = int(frames, 10) / int(seconds, 10)
-        if result > 0:
-            return round(result)
+        frames_int = int(frames, 10)
+        seconds_int = int(seconds, 10)
+        if frames_int > 0 and seconds_int > 0:
+            result = frames_int / seconds_int
+            if result > 0:
+                return round(result)
 
     return 0
 
