@@ -17,6 +17,10 @@ and this project adheres to
 
 - Transcoding ended callback also called when transcoding failed
 
+## Fixed
+
+- Division by zero when calculating the average fps
+
 ## [0.3.1] - 2023-11-16
 
 ## Fixed

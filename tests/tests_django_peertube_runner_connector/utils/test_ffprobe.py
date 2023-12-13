@@ -50,6 +50,20 @@ class TestFFProbe(TestCase):
         fps = get_video_stream_fps(probe_response)
         self.assertEqual(fps, 30)
 
+    def test_get_video_stream_without_fps(self):
+        """Should return the video stream fps."""
+        fps = get_video_stream_fps(
+            {
+                "streams": [
+                    {
+                        "codec_type": "video",
+                        "avg_frame_rate": "30/0",
+                    }
+                ]
+            }
+        )
+        self.assertEqual(fps, 0)
+
     def test_is_audio_file(self):
         """Should return True if the file is an audio file."""
         is_audio = is_audio_file(probe_response)
