@@ -7,7 +7,15 @@ import socketio
 from django_peertube_runner_connector.models import Runner
 
 
-sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+sio_logger = logging.getLogger(f"{__name__}.asyncio")
+engineio_logger = logging.getLogger(f"{__name__}.engineio")
+
+sio = socketio.AsyncServer(
+    async_mode="asgi",
+    cors_allowed_origins="*",
+    logger=sio_logger,
+    engineio_logger=engineio_logger,
+)
 
 logger = logging.getLogger(__name__)
 
