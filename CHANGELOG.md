@@ -12,6 +12,7 @@ and this project adheres to
 ## Added
 
 - Support django 5.0
+- Enable logger in socketio server
 
 ## Changed
 
