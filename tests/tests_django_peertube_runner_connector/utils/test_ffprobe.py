@@ -45,6 +45,28 @@ class TestFFProbe(TestCase):
         self.assertEqual(dimensions_info["resolution"], 540)
         self.assertFalse(dimensions_info["isPortraitMode"])
 
+    def test_get_video_stream_dimensions_info_with_one_dimension(self):
+        """Should return the video stream dimensions info."""
+
+        dimensions_info = get_video_stream_dimensions_info(
+            "/path/to/video.mp4",
+            existing_probe={
+                "streams": [
+                    {
+                        "codec_type": "video",
+                        "height": 0,
+                        "width": 1900,
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(dimensions_info["width"], 1900)
+        self.assertEqual(dimensions_info["height"], 0)
+        self.assertEqual(dimensions_info["ratio"], 0)
+        self.assertEqual(dimensions_info["resolution"], 0)
+        self.assertFalse(dimensions_info["isPortraitMode"])
+
     def test_get_video_stream_fps(self):
         """Should return the video stream fps."""
         fps = get_video_stream_fps(probe_response)
@@ -83,10 +105,6 @@ class TestFFProbe(TestCase):
         )
 
         self.assertEqual(
-            audio_stream["absolute_path"],
-            "/path/to/audio.mp3",
-        )
-        self.assertEqual(
             audio_stream["audio_stream"],
             {
                 "bit_rate": "1066073",
@@ -99,7 +117,46 @@ class TestFFProbe(TestCase):
                 "tags": {"language": "eng"},
             },
         )
+        self.assertEqual(audio_stream["absolute_path"], "/path/to/audio.mp3")
         self.assertEqual(audio_stream["bitrate"], 1066073)
+
+    def test_get_audio_stream_without_bitrate(self):
+        """Should return the audio stream with bitrate set to 0."""
+
+        audio_stream = get_audio_stream(
+            "/path/to/audio.mp3",
+            existing_probe={
+                "streams": [
+                    {
+                        "codec_type": "audio",
+                        "channels": 2,
+                        "codec_name": "aac",
+                        "duration": "00:01:00.00",
+                        "index": 1,
+                        "sample_rate": "48000 Hz",
+                        "tags": {"language": "eng"},
+                    }
+                ],
+                "format": {
+                    "filename": "/path/to/audio.mp3",
+                },
+            },
+        )
+
+        self.assertEqual(
+            audio_stream["audio_stream"],
+            {
+                "channels": 2,
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "duration": "00:01:00.00",
+                "index": 1,
+                "sample_rate": "48000 Hz",
+                "tags": {"language": "eng"},
+            },
+        )
+        self.assertEqual(audio_stream["absolute_path"], "/path/to/audio.mp3")
+        self.assertEqual(audio_stream["bitrate"], 0)
 
     def test_build_file_metadata(self):
         """Should return a dic with the file metadata."""

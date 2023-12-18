@@ -123,18 +123,20 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
     def error_runner_job(self, request, uuid=None):
         """Endpoint to signal an error with a job."""
         runner = self._get_runner_from_token(request)
+        message = request.data.get("message")
         job = self._get_job_from_uuid(uuid)
         job.failures += 1
 
         logger.error(
-            "Remote runner %s had an error with job %s (%s)",
+            "Remote runner %s had an error with job %s (%s): %s",
             runner.name,
             job.uuid,
             job.type,
+            message,
         )
 
         runner_job_handler = get_runner_job_handler_class(job)
-        runner_job_handler().error(runner_job=job, message=request.data.get("message"))
+        runner_job_handler().error(runner_job=job, message=message)
 
         runner.update_last_contact(get_client_ip(request))
 
