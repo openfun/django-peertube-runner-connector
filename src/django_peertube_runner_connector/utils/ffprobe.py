@@ -28,12 +28,14 @@ def get_video_stream_dimensions_info(path: str, existing_probe=None):
     """Return the video stream dimensions info."""
 
     if video_stream := get_video_stream(path=path, existing_probe=existing_probe):
+        min_dimension = min(video_stream["height"], video_stream["width"])
+        max_dimension = max(video_stream["height"], video_stream["width"])
+
         return {
             "width": video_stream["width"],
             "height": video_stream["height"],
-            "ratio": max(video_stream["height"], video_stream["width"])
-            / min(video_stream["height"], video_stream["width"]),
-            "resolution": min(video_stream["height"], video_stream["width"]),
+            "ratio": max_dimension / min_dimension if min_dimension > 0 else 0,
+            "resolution": min_dimension,
             "isPortraitMode": video_stream["height"] > video_stream["width"],
         }
 
@@ -139,7 +141,7 @@ def get_audio_stream(path, existing_probe=None):
         return {
             "absolute_path": probe["format"]["filename"],
             "audio_stream": audio_stream,
-            "bitrate": int(audio_stream.get("bit_rate")),
+            "bitrate": int(audio_stream.get("bit_rate", 0)),
         }
 
     return {"absolute_path": probe["format"]["filename"]}

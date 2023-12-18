@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Fixed
+
+- Crash when properties were missing from probe
+
 ## [0.4.0] - 2023-12-14
 
 ## Added
