@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.5.0] - 2023-12-21
+
 ## Changed
 
 - Download video is now a redirect
@@ -60,7 +62,8 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.4.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.5.0...main
+[0.5.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.2.0...v0.3.0
