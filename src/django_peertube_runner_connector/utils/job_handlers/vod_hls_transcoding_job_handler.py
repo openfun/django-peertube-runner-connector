@@ -5,6 +5,8 @@ import logging
 import os
 import uuid
 
+from django.urls import reverse
+
 from django_peertube_runner_connector.models import RunnerJob, RunnerJobType, Video
 from django_peertube_runner_connector.storage import video_storage
 from django_peertube_runner_connector.utils.files import (
@@ -30,12 +32,19 @@ logger = logging.getLogger(__name__)
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
     """Handler for vod hls transcoding jobs."""
 
-    def create(self, video: Video, resolution, fps, depends_on_runner_job, video_url):
+    def create(self, video: Video, resolution, fps, depends_on_runner_job, domain: str):
         job_uuid = uuid.uuid4()
 
         payload = {
             "input": {
-                "videoFileUrl": video_url,
+                "videoFileUrl": domain
+                + reverse(
+                    "runner-jobs-download_video_file",
+                    args=(
+                        video.uuid,
+                        job_uuid,
+                    ),
+                ),
             },
             "output": {
                 "resolution": resolution,
@@ -50,6 +59,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         }
 
         job = self.create_runner_job(
+            domain=domain,
             job_type=RunnerJobType.VOD_HLS_TRANSCODING,
             job_uuid=job_uuid,
             payload=payload,

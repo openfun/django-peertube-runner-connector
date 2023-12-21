@@ -107,6 +107,9 @@ class RunnerJob(models.Model):
         default=uuid4,
     )
     uuid = models.UUIDField(unique=True, default=uuid4, help_text="Job UUID")
+    domain = models.CharField(
+        max_length=255, null=True, blank=True, help_text="Job domain"
+    )
     type = models.CharField(
         max_length=255, choices=RunnerJobType.choices, help_text="Job type"
     )
@@ -116,9 +119,7 @@ class RunnerJob(models.Model):
     )
     state = models.IntegerField(choices=RunnerJobState.choices, help_text="Job state")
     failures = models.IntegerField(default=0, help_text="Number of failures")
-    error = models.CharField(
-        max_length=255, null=True, blank=True, help_text="Error message"
-    )
+    error = models.TextField(null=True, blank=True, help_text="Error message")
     priority = models.IntegerField(help_text="Job priority")
     processingJobToken = models.CharField(
         max_length=255, null=True, blank=True, help_text="Processing job token"

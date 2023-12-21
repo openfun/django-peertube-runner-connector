@@ -89,5 +89,5 @@ class UploadVideoAPITest(TestCase):
             self.assertEqual(
                 runner_job.payload["input"]["videoFileUrl"],
                 "http://testserver/api/v1/runners/jobs/"
-                f"files/videos/{created_video.uuid}/max-quality",
+                f"files/videos/{created_video.uuid}/{runner_job.uuid}/max-quality",
             )

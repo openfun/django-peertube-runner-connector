@@ -115,16 +115,14 @@ class JobCreationTestCase(TestCase):
         mocked_class = Mock()
         mock_job_handler.return_value = mocked_class
 
-        create_transcoding_jobs(
-            self.video, self.video_file, "video_url", probe_response
-        )
+        create_transcoding_jobs(self.video, self.video_file, "domain", probe_response)
 
         mocked_class.create.assert_called_with(
             video=self.video,
             resolution=540,
             fps=30,
             depends_on_runner_job=None,
-            video_url="video_url",
+            domain="domain",
         )
 
         mock_build_resolution.assert_called_with(
@@ -133,7 +131,7 @@ class JobCreationTestCase(TestCase):
             input_video_fps=30,
             has_audio=True,
             main_runner_job=mocked_class.create(),
-            video_url="video_url",
+            domain="domain",
         )
 
     @patch(
@@ -153,7 +151,7 @@ class JobCreationTestCase(TestCase):
             input_video_fps=30,
             has_audio=True,
             main_runner_job=main_runner_job,
-            video_url="video_url",
+            domain="domain",
         )
 
         mocked_class.create.assert_has_calls(
@@ -163,14 +161,14 @@ class JobCreationTestCase(TestCase):
                     resolution=360,
                     fps=30,
                     depends_on_runner_job=main_runner_job,
-                    video_url="video_url",
+                    domain="domain",
                 ),
                 call(
                     video=self.video,
                     resolution=480,
                     fps=30,
                     depends_on_runner_job=main_runner_job,
-                    video_url="video_url",
+                    domain="domain",
                 ),
             ]
         )
