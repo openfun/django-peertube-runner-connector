@@ -1,8 +1,10 @@
 """API Endpoints for Runner Jobs with Django RestFramework viewsets."""
 import logging
+from urllib.parse import urlparse
 from uuid import uuid4
 
-from django.http import FileResponse, Http404
+from django.http import Http404
+from django.shortcuts import redirect
 from django.utils import timezone
 
 from rest_framework import status, viewsets
@@ -182,13 +184,14 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
     @action(
         detail=False,
         methods=["post"],
-        url_path="files/videos/(?P<video_id>[^/.]+)/max-quality",
+        url_path="files/videos/(?P<video_id>[^/.]+)/(?P<job_id>[^/.]+)/max-quality",
         url_name="download_video_file",
     )
-    def download_video_file(self, request, video_id=None):
+    def download_video_file(self, request, video_id=None, job_id=None):
         """Endpoint to download a video file."""
         runner = self._get_runner_from_token(request)
         video = self._get_video_from_uuid(video_id)
+        job = self._get_job_from_uuid(job_id)
 
         logger.info(
             "Get max quality file of video %s for runner %s",
@@ -197,5 +200,7 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
         )
 
         video_file = video.get_max_quality_file()
-
-        return FileResponse(video_storage.open(video_file.filename, "rb"))
+        video_url = video_storage.url(video_file.filename)
+        if not urlparse(video_url).scheme and job.domain:
+            video_url = job.domain + video_url
+        return redirect(video_url, permanent=True)

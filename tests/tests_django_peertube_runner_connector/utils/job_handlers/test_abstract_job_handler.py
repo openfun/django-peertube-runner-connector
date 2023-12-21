@@ -54,6 +54,7 @@ class TestAbstractJobHandler(TestCase):
         runner_job = handler.create_runner_job(
             job_type=RunnerJobType.VOD_HLS_TRANSCODING,
             job_uuid="123e4567-e89b-12d3-a456-426655440003",
+            domain="domain",
             payload={"test": "test"},
             private_payload={"private": "private"},
             priority=0,
@@ -78,6 +79,7 @@ class TestAbstractJobHandler(TestCase):
         runner_job = handler.create_runner_job(
             job_type=RunnerJobType.VOD_HLS_TRANSCODING,
             job_uuid="123e4567-e89b-12d3-a456-426655440003",
+            domain="domain",
             payload={"test": "test"},
             private_payload={"private": "private"},
             priority=0,

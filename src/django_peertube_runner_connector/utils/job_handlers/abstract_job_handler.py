@@ -28,11 +28,13 @@ class AbstractJobHandler(ABC):
     """Base class for job handlers."""
 
     @abstractmethod
-    def create(self, video: Video, resolution, fps, depends_on_runner_job, video_url):
+    def create(self, video: Video, resolution, fps, depends_on_runner_job, domain):
         """This method should be implemented by subclasses."""
 
+    # pylint: disable=too-many-arguments
     def create_runner_job(
         self,
+        domain: str,
         job_type: RunnerJobType,
         job_uuid: UUID,
         payload: dict,
@@ -43,6 +45,7 @@ class AbstractJobHandler(ABC):
         """This method creates a RunnerJob and send a ping to the runners."""
         runner_job = RunnerJob.objects.create(
             type=job_type,
+            domain=domain,
             payload=payload,
             privatePayload=private_payload,
             uuid=job_uuid,

@@ -50,7 +50,10 @@ class TestVODHLSTranscodingJobHandler(TestCase):
             runner_job.payload,
             {
                 "input": {
-                    "videoFileUrl": "test_url",
+                    "videoFileUrl": (
+                        "test_url/api/v1/runners/jobs/files/videos/123e4567-e89b-"
+                        f"12d3-a456-426655440002/{runner_job.uuid}/max-quality"
+                    ),
                 },
                 "output": {
                     "resolution": "720",

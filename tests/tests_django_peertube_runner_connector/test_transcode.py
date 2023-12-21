@@ -49,8 +49,7 @@ class TestTranscode(TestCase):
         mock_process.assert_called_with(
             video=created_video,
             video_path=video_url,
-            video_url="https://example.com/api/v1/runners/jobs/"
-            f"files/videos/{created_video.uuid}/max-quality",
+            domain="https://example.com",
         )
 
     @patch.object(ffmpeg, "probe")
@@ -75,7 +74,7 @@ class TestTranscode(TestCase):
         _process_transcoding(
             video=video,
             video_path=video_url,
-            video_url="download_video_url",
+            domain="domain",
         )
 
         mock_probe.assert_called_with("/test_directory/file.mp4")
@@ -90,7 +89,7 @@ class TestTranscode(TestCase):
             video=video,
             video_file=video_file,
             existing_probe=mock_probe.return_value,
-            video_url="download_video_url",
+            domain="domain",
         )
 
         self.assertEqual(video.duration, 900)

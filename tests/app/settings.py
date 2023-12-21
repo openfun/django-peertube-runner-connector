@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 from configurations import Configuration, values
@@ -97,6 +98,10 @@ class Base(Configuration):
     }
 
     STATIC_ROOT = BASE_DIR / "staticfiles"
+    # Used the serve static files
+    VIDEOS_ROOT = values.Value(os.path.join(BASE_DIR, "storage"))
+    # Use to create the endpoint that will serve the static files
+    VIDEO_URL = "storage"
 
     STORAGES = {
         "default": {

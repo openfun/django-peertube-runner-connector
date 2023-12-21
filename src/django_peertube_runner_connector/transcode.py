@@ -1,8 +1,6 @@
 """Base function to start the transcoding process."""
 import logging
 
-from django.urls import reverse
-
 import ffmpeg
 
 from django_peertube_runner_connector.models import Video
@@ -23,7 +21,7 @@ class VideoNotFoundError(Exception):
     """Exception class for when transcoding cannot find a video in the storage."""
 
 
-def _process_transcoding(video: Video, video_path: str, video_url: str):
+def _process_transcoding(video: Video, video_path: str, domain: str):
     """
     Create a video_file, thumbnails and transcoding jobs for a video.
     The request will be used to build the video download url.
@@ -44,7 +42,7 @@ def _process_transcoding(video: Video, video_path: str, video_url: str):
         video=video,
         video_file=video_file,
         existing_probe=probe,
-        video_url=video_url,
+        domain=domain,
     )
 
 
@@ -75,8 +73,6 @@ def transcode_video(
         baseFilename=base_name,
     )
 
-    video_url = domain + reverse("runner-jobs-download_video_file", args=(video.uuid,))
-
-    _process_transcoding(video=video, video_path=file_path, video_url=video_url)
+    _process_transcoding(video=video, video_path=file_path, domain=domain)
 
     return video

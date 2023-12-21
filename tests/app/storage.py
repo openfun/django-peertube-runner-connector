@@ -1,4 +1,5 @@
 """Custom storage class for testing."""
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -13,7 +14,5 @@ class MyS3VideoStorage(S3Boto3Storage):
 class MyCustomFileSystemVideoStorage(FileSystemStorage):
     """Custom FileSystemStorage class."""
 
-    def url(self, name):
-        return self.path(name)
-
-    location = "storage"
+    location = settings.VIDEO_URL
+    base_url = f"http://localhost:8000/{settings.VIDEO_URL}/"

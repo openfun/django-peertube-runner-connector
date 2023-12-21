@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Changed
+
+- Download video is now a redirect
+
 ## Fixed
 
 - Crash when properties were missing from probe

@@ -97,10 +97,11 @@ class DownloadVideoRunnerJobAPITest(TestCase):
 
         response = self.client.post(
             "/api/v1/runners/jobs/"
-            "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
+            "files/videos/02404b18-3c50-4929-af61-913f4df65e99/"
+            "02404b18-3c50-4929-af61-913f4df65e00/max-quality",
             data={
                 "runnerToken": "runnerToken",
             },
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 301)

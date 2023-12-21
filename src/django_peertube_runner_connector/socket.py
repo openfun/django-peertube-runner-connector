@@ -45,4 +45,5 @@ async def disconnect(sid):
 
 async def send_available_jobs_ping_to_runners():
     """Send an "available jobs" ping to the runners."""
+    logger.info("Available jobs ping sent to runners")
     await sio.emit("available-jobs", namespace="/runners")
