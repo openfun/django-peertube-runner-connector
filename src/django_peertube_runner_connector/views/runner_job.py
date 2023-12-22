@@ -184,6 +184,23 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
     @action(
         detail=False,
         methods=["post"],
+        url_path="upload_file",
+        url_name="upload_video_file",
+    )
+    def upload_video_file(self, request):
+        """Endpoint to upload a video file."""
+        runner = self._get_runner_from_token(request)
+        key = request.data.get("key")
+
+        logger.info("Saving file for runner %s", runner.name)
+
+        video_storage.save(key, request.data.get("file").file)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=False,
+        methods=["post"],
         url_path="files/videos/(?P<video_id>[^/.]+)/(?P<job_id>[^/.]+)/max-quality",
         url_name="download_video_file",
     )

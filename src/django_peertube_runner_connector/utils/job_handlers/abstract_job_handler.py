@@ -99,6 +99,7 @@ class AbstractJobHandler(ABC):
             self.specific_complete(runner_job, result_payload)
             runner_job.state = RunnerJobState.COMPLETED
         except Exception as err:  # pylint: disable=broad-except
+            print(err)
             runner_job.state = RunnerJobState.ERRORED
             runner_job.error = str(err)
 

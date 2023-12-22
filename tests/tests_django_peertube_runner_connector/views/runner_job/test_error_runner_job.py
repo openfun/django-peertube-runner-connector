@@ -78,6 +78,7 @@ class ErrorRunnerJobAPITest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    @override_settings(TRANSCODING_RUNNER_MAX_FAILURE=5)
     def test_error_hls_job_no_limit_reached(self):
         """
         Should be able to error the processing HLS job.

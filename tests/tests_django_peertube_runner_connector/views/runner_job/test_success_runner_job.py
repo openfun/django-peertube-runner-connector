@@ -44,7 +44,28 @@ class SuccessRunnerJobAPITest(TestCase):
             runner=self.runner,
             type=job_type,
             uuid="02404b18-3c50-4929-af61-913f4df65e00",
-            payload={"output": {"resolution": "1080"}},
+            payload={
+                "output": {
+                    "resolution": "1080",
+                    "fps": "30",
+                    "playlistFileUrl": {
+                        "fields": {
+                            "key": (
+                                "video-02404b18-3c50-4929-af61-913f4df65e99/"
+                                "my_video_result.m3u8"
+                            )
+                        }
+                    },
+                    "videoFileUrl": {
+                        "fields": {
+                            "key": (
+                                "video-02404b18-3c50-4929-af61-913f4df65e99/"
+                                "my_video_result.mp4"
+                            )
+                        }
+                    },
+                }
+            },
             privatePayload={
                 "videoUUID": "02404b18-3c50-4929-af61-913f4df65e99",
                 "isNewVideo": True,
@@ -83,7 +104,18 @@ class SuccessRunnerJobAPITest(TestCase):
         uploaded_video = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
-        SimpleUploadedFile("file.m3u8", b"file_content", content_type="video/mp4")
+        playlist = SimpleUploadedFile(
+            "file.m3u8", b"file_content", content_type="application/x-mpegURL"
+        )
+
+        video_storage.save(
+            "video-02404b18-3c50-4929-af61-913f4df65e99/my_video_result.mp4",
+            uploaded_video,
+        )
+        video_storage.save(
+            "video-02404b18-3c50-4929-af61-913f4df65e99/my_video_result.m3u8",
+            playlist,
+        )
 
         now = datetime(2018, 8, 8, tzinfo=tz.utc)
 
@@ -94,8 +126,6 @@ class SuccessRunnerJobAPITest(TestCase):
                 "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/success",
                 data={
                     "runnerToken": "runnerToken",
-                    "payload[videoFile]": uploaded_video,
-                    "payload[resolutionPlaylistFile]": uploaded_video,
                 },
             )
             self.assertEqual(response.status_code, 204)

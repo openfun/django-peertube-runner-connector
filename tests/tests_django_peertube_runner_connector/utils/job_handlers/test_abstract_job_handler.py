@@ -255,6 +255,7 @@ class TestAbstractJobHandler(TestCase):
         )
         handler.specific_abort.assert_not_called()
 
+    @override_settings(TRANSCODING_RUNNER_MAX_FAILURE=5)
     def test_error_with_abort_supported(self):
         """Should reset the state of the runner job."""
         handler = VODHLSTranscodingJobHandler()
