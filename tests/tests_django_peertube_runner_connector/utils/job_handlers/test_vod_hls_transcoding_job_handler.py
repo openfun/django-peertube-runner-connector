@@ -11,6 +11,7 @@ from django_peertube_runner_connector.factories import (
     VideoJobInfoFactory,
 )
 from django_peertube_runner_connector.models import RunnerJobType
+from django_peertube_runner_connector.storage import video_storage
 from django_peertube_runner_connector.utils.job_handlers.vod_hls_transcoding_job_handler import (
     VODHLSTranscodingJobHandler,
 )
@@ -25,7 +26,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
     def setUp(self):
         """Create a video, a video file and a video job."""
         self.video = VideoFactory(
-            uuid="123e4567-e89b-12d3-a456-426655440002",
+            uuid="123e4567-e89b-12d3-a456-426655440002", baseFilename="new_video"
         )
         self.video_file = VideoFileFactory(
             video=self.video,
@@ -46,6 +47,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
 
         self.video.refresh_from_db()
         self.assertEqual(runner_job.type, RunnerJobType.VOD_HLS_TRANSCODING)
+
         self.assertEqual(
             runner_job.payload,
             {
@@ -58,6 +60,24 @@ class TestVODHLSTranscodingJobHandler(TestCase):
                 "output": {
                     "resolution": "720",
                     "fps": 30,
+                    "videoFileUrl": {
+                        "url": "test_url/api/v1/runners/jobs/upload_file",
+                        "fields": {
+                            "key": (
+                                "video-123e4567-e89b-12d3-a456-426655440002/"
+                                "new_video-720-fragmented.mp4"
+                            )
+                        },
+                    },
+                    "playlistFileUrl": {
+                        "url": "test_url/api/v1/runners/jobs/upload_file",
+                        "fields": {
+                            "key": (
+                                "video-123e4567-e89b-12d3-a456-426655440002/"
+                                "new_video-720.m3u8"
+                            )
+                        },
+                    },
                 },
             },
         )
@@ -113,6 +133,22 @@ class TestVODHLSTranscodingJobHandler(TestCase):
                 "output": {
                     "resolution": "720",
                     "fps": 30,
+                    "playlistFileUrl": {
+                        "fields": {
+                            "key": (
+                                "video-02404b18-3c50-4929-af61-913f4df66e99/"
+                                "my_video_result.m3u8"
+                            )
+                        }
+                    },
+                    "videoFileUrl": {
+                        "fields": {
+                            "key": (
+                                "video-02404b18-3c50-4929-af61-913f4df66e99/"
+                                "my_video_result.mp4"
+                            )
+                        }
+                    },
                 },
             },
             privatePayload={
@@ -128,24 +164,24 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         uploaded_playlist_file = SimpleUploadedFile(
             "file.m3u8", b"file_content", content_type="video/mp4"
         )
-
-        result_payload = {
-            "video_file": uploaded_video_file,
-            "resolution_playlist_file": uploaded_playlist_file,
-        }
+        video_storage.save(
+            "video-02404b18-3c50-4929-af61-913f4df66e99/my_video_result.mp4",
+            uploaded_video_file,
+        )
+        video_storage.save(
+            "video-02404b18-3c50-4929-af61-913f4df66e99/my_video_result.m3u8",
+            uploaded_playlist_file,
+        )
         handler = VODHLSTranscodingJobHandler()
-        handler.specific_complete(runner_job, result_payload=result_payload)
-
-        mock_generate_hls.assert_called_once_with("720", None)
+        handler.specific_complete(runner_job, result_payload={})
 
         mock_build_new_file.assert_called_once_with(
             video=self.video,
-            filename="video-123e4567-e89b-12d3-a456-426655440002"
-            "/4b3bbd37-4e87-48a9-8f26-c04c0b9fdbb5-720-fragmented.mp4",
+            filename="video-02404b18-3c50-4929-af61-913f4df66e99/my_video_result.mp4",
         )
 
         mock_rename_video.assert_called_once_with(
-            "test_filename.m3u8",
+            "video-02404b18-3c50-4929-af61-913f4df66e99/my_video_result.m3u8",
             "test_filename",
         )
 

@@ -197,7 +197,27 @@ from django_peertube_runner_connector.urls import (
 urlpatterns += django_peertube_runner_connector_urls
 ```
 
-Voilà! Your server should be ready!
+Voilà! Your server should be ready! 
+
+### Usage
+Now somewhere in your project, you can call the `transcode_video` function:
+
+```Python
+from django_peertube_runner_connector.transcode import transcode_video
+
+transcode_video(
+    # Path to the video file
+    file_path="/path/to/video.mp4",
+    # Destination directory for the transcoded files
+    destination="result/",
+    # Used to name the files in the destination directory
+    base_name="my_cat",
+    # The domain name used to construct the download / upload URL for peerTube runners
+    domain=domain,
+)
+```
+
+And the transcoding will start!
 
 
 ### Demo application

@@ -8,7 +8,7 @@ import uuid
 from django.urls import reverse
 
 from django_peertube_runner_connector.models import RunnerJob, RunnerJobType, Video
-from django_peertube_runner_connector.storage import video_storage
+from django_peertube_runner_connector.storage import get_video_storage_upload_url
 from django_peertube_runner_connector.utils.files import (
     build_new_file,
     generate_hls_video_filename,
@@ -35,6 +35,13 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
     def create(self, video: Video, resolution, fps, depends_on_runner_job, domain: str):
         job_uuid = uuid.uuid4()
 
+        video_filename = get_video_directory(
+            video,
+            generate_hls_video_filename(resolution, video.baseFilename),
+        )
+
+        playlist_filename = get_hls_resolution_playlist_filename(video_filename)
+
         payload = {
             "input": {
                 "videoFileUrl": domain
@@ -48,10 +55,13 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             },
             "output": {
                 "resolution": resolution,
+                "videoFileUrl": get_video_storage_upload_url(video_filename, domain),
+                "playlistFileUrl": get_video_storage_upload_url(
+                    playlist_filename, domain
+                ),
                 "fps": fps,
             },
         }
-
         private_payload = {
             "isNewVideo": False,
             "deleteWebVideoFiles": False,
@@ -77,26 +87,13 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         if not video:
             return
 
-        # Saving the mp4 file in the video folder and creating the VideoFile object
-        uploaded_video_file = result_payload["video_file"]
-        resolution = runner_job.payload["output"]["resolution"]
-
-        filename = video_storage.save(
-            get_video_directory(
-                video,
-                generate_hls_video_filename(resolution, video.baseFilename),
-            ),
-            uploaded_video_file,
-        )
+        filename = runner_job.payload["output"]["videoFileUrl"]["fields"]["key"]
 
         video_file = build_new_file(video=video, filename=filename)
 
-        # Saving the associated m3u8 file
-        resolution_playlist_file = result_payload["resolution_playlist_file"]
-        resolution_playlist_filename = video_storage.save(
-            get_hls_resolution_playlist_filename(video_file.filename),
-            resolution_playlist_file,
-        )
+        resolution_playlist_filename = runner_job.payload["output"]["playlistFileUrl"][
+            "fields"
+        ]["key"]
 
         # The content of the m3u8 file is not correct, we need to replace the video filename
         # because we gave it a new name
