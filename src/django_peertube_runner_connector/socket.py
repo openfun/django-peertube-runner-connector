@@ -5,13 +5,17 @@ from asgiref.sync import sync_to_async
 import socketio
 
 from django_peertube_runner_connector.models import Runner
+from django_peertube_runner_connector.socketio.manager import get_client_manager
 
 
 sio_logger = logging.getLogger(f"{__name__}.asyncio")
 engineio_logger = logging.getLogger(f"{__name__}.engineio")
 
+client_manager = get_client_manager()
+
 sio = socketio.AsyncServer(
     async_mode="asgi",
+    client_manager=client_manager,
     cors_allowed_origins="*",
     logger=sio_logger,
     engineio_logger=engineio_logger,
@@ -46,4 +50,8 @@ async def disconnect(sid):
 async def send_available_jobs_ping_to_runners():
     """Send an "available jobs" ping to the runners."""
     logger.info("Available jobs ping sent to runners")
-    await sio.emit("available-jobs", namespace="/runners")
+    manager = get_client_manager(write_only=True)
+    if manager:
+        await manager.emit("available-jobs", data=None, namespace="/runners")
+    else:
+        await sio.emit("available-jobs", namespace="/runners")

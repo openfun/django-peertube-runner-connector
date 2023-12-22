@@ -197,6 +197,20 @@ from django_peertube_runner_connector.urls import (
 urlpatterns += django_peertube_runner_connector_urls
 ```
 
+If your application is distributed on multiple servers, you will probably need
+to use a message queue. We manage redis and redis sentinel manager. For this,
+you have to define this settings
+
+#### Redis sentinel
+
+- `DJANGO_PEERTUBE_RUNNER_CONNECTOR_SENTINELS`: A list of sentinel nodes. 
+Each node is represented by a pair (hostname, port). Example: [('localhost', 26379)]
+- `DJANGO_PEERTUBE_RUNNER_CONNECTOR_SENTINELS_MASTER`: The master sentinel name. Example: mymaster
+
+#### Redis
+
+- `DJANGO_PEERTUBE_RUNNER_CONNECTOR_REDIS`: The redis url. Example: `redis://localhost:6379`
+
 Voilà! Your server should be ready!
 
 
