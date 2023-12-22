@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+- Instantiate a redis manager for socketio
+
 ## [0.5.0] - 2023-12-21
 
 ## Changed
