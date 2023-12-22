@@ -9,44 +9,46 @@ and this project adheres to
 
 ## [Unreleased]
 
-## Added
+## [0.6.0] - 2023-12-22
+
+### Added
 
 - Instantiate a redis manager for socketio
 
 ## [0.5.0] - 2023-12-21
 
-## Changed
+### Changed
 
 - Download video is now a redirect
 
-## Fixed
+### Fixed
 
 - Crash when properties were missing from probe
 
 ## [0.4.0] - 2023-12-14
 
-## Added
+### Added
 
 - Support django 5.0
 - Enable logger in socketio server
 
-## Changed
+### Changed
 
 - Transcoding ended callback also called when transcoding failed
 
-## Fixed
+### Fixed
 
 - Division by zero when calculating the average fps
 
 ## [0.3.1] - 2023-11-16
 
-## Fixed
+### Fixed
 
 - videos storage does not remove settings
 
 ## [0.3.0] - 2023-11-15
 
-## Changed
+### Changed
 
 - Add settings options for "videos" storages
 
@@ -66,7 +68,8 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.5.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.6.0...main
+[0.6.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.3.0...v0.3.1
