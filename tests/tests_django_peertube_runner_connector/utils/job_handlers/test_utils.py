@@ -1,7 +1,7 @@
 """Test the job handlers utils file."""
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from django_peertube_runner_connector.factories import (
     RunnerJobFactory,
@@ -9,13 +9,22 @@ from django_peertube_runner_connector.factories import (
     VideoJobInfoFactory,
 )
 from django_peertube_runner_connector.utils.job_handlers.utils import (
+    is_transcription_language_valid,
     load_runner_video,
     on_transcoding_ended,
+    on_transcription_ended,
 )
+
+
+mock_transcription_ended_callback = Mock()
 
 
 class TestJobHandlersUtils(TestCase):
     """Test the job handlers utils file."""
+
+    def setUp(self):
+        """Mock the transcription ended callback."""
+        mock_transcription_ended_callback.reset_mock()
 
     def test_load_runner_video(self):
         """Should be able to load a transcoding runner video from payload."""
@@ -68,3 +77,47 @@ class TestJobHandlersUtils(TestCase):
 
         self.assertEqual(job_info.pendingTranscode, 0)
         mock_move_to_next_state.assert_not_called()
+
+    def test_is_transcription_language_valid_all_language_settings(self):
+        """
+        Should check if a transcription language is valid using ALL_LANGUAGES settings.
+        """
+
+        with self.settings(ALL_LANGUAGES=(("en", "English"), ("fr", "French"))):
+            self.assertTrue(is_transcription_language_valid("en"))
+            self.assertTrue(is_transcription_language_valid("fr"))
+            self.assertFalse(is_transcription_language_valid("es"))
+
+    def test_is_transcription_language_valid_languages_settings(self):
+        """
+        Should check if a transcription language is valid using LANGUAGES settings.
+        """
+        with self.settings(LANGUAGES=(("en", "English"), ("fr", "French"))):
+            self.assertTrue(is_transcription_language_valid("en"))
+            self.assertTrue(is_transcription_language_valid("fr"))
+            self.assertFalse(is_transcription_language_valid("es"))
+
+    @override_settings(
+        TRANSCRIPTION_ENDED_CALLBACK_PATH="tests_django_peertube_runner_connector."
+        "utils.job_handlers.test_utils.mock_transcription_ended_callback"
+    )
+    @patch("django_peertube_runner_connector.utils.job_handlers.utils.logger")
+    def test_on_transcription_ended(self, mock_logger):
+        """Should be able to handle transcription ended event."""
+        video = VideoFactory()
+        language = "en"
+        vtt_path = "/path/to/file.vtt"
+
+        on_transcription_ended(video, language, vtt_path)
+
+        mock_transcription_ended_callback.assert_called_once_with(
+            video, language, vtt_path
+        )
+
+        video.refresh_from_db()
+        self.assertEqual(video.language, language)
+        self.assertEqual(video.transcriptFileName, vtt_path)
+
+        mock_logger.info.assert_called_once_with(
+            "Transcription ended for %s.", str(video.uuid)
+        )
