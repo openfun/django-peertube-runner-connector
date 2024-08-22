@@ -141,6 +141,7 @@ class Base(Configuration):
     TRANSCODING_RUNNER_MAX_FAILURE = values.IntegerValue(5)
 
     TRANSCODING_ENDED_CALLBACK_PATH = values.Value("")
+    TRANSCRIPTION_ENDED_CALLBACK_PATH = values.Value("")
 
     # Password validation
     # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

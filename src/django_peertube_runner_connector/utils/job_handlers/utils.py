@@ -3,6 +3,9 @@ from __future__ import annotations
 
 import logging
 
+from django.conf import settings
+from django.utils.module_loading import import_string
+
 from django_peertube_runner_connector.models import RunnerJob, Video
 from django_peertube_runner_connector.utils.video_state import move_to_next_state
 
@@ -31,6 +34,39 @@ def on_transcoding_ended(video: Video, move_video_to_next_state: bool):
 
     if move_video_to_next_state:
         move_to_next_state(video=video)
+
+
+def is_transcription_language_valid(language):
+    """Check if a transcription language is valid."""
+    languages = getattr(settings, "ALL_LANGUAGES", settings.LANGUAGES)
+    return language in dict(languages)
+
+
+def on_transcription_ended(video: Video, language: str, vtt_path: str):
+    """Handle transcription ended event."""
+
+    logger.info("Transcription ended for %s.", video.uuid)
+
+    if not is_transcription_language_valid(language):
+        logger.error(
+            "Invalid transcription language %s for video %s.", language, video.uuid
+        )
+        return
+
+    if not video.language:
+        video.language = language
+
+    video.transcriptFileName = vtt_path
+    video.save()
+
+    if callback_path := settings.TRANSCRIPTION_ENDED_CALLBACK_PATH:
+        try:
+            callback = import_string(callback_path)
+            callback(video, language, vtt_path)
+        except ImportError:
+            logger.error("Error importing transcription_ended callback.")
+    else:
+        logger.info("No transcription_ended callback defined for video %s.", video.uuid)
 
 
 # def on_vod_web_video_or_audio_merge_transcoding_job(
