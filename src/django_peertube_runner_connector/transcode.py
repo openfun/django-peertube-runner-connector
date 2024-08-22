@@ -4,7 +4,7 @@ import logging
 import ffmpeg
 
 from django_peertube_runner_connector.models import Video
-from django_peertube_runner_connector.storage import video_storage
+from django_peertube_runner_connector.storage import VideoNotFoundError, video_storage
 from django_peertube_runner_connector.utils.ffprobe import get_video_stream_duration
 from django_peertube_runner_connector.utils.files import build_new_file
 from django_peertube_runner_connector.utils.thumbnail import build_video_thumbnails
@@ -15,10 +15,6 @@ from django_peertube_runner_connector.utils.video_state import build_next_video_
 
 
 logger = logging.getLogger(__name__)
-
-
-class VideoNotFoundError(Exception):
-    """Exception class for when transcoding cannot find a video in the storage."""
 
 
 def _process_transcoding(video: Video, video_path: str, domain: str):
