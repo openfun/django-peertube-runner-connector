@@ -21,7 +21,7 @@ from django_peertube_runner_connector.utils.transcoding.hls_playlist import (
 )
 
 from .abstract_vod_transcoding_job_handler import AbstractVODTranscodingJobHandler
-from .utils import load_transcoding_runner_video, on_transcoding_ended
+from .utils import load_runner_video, on_transcoding_ended
 
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         return job
 
     def specific_complete(self, runner_job: RunnerJob, result_payload):
-        video = load_transcoding_runner_video(runner_job)
+        video = load_runner_video(runner_job)
         if not video:
             return
 

@@ -10,7 +10,7 @@ from django_peertube_runner_connector.utils.video_state import move_to_next_stat
 logger = logging.getLogger(__name__)
 
 
-def load_transcoding_runner_video(runner_job: RunnerJob):
+def load_runner_video(runner_job: RunnerJob):
     """Get a Video object from a payload return by the PeerTube runner."""
     video_uuid = runner_job.privatePayload["videoUUID"]
 
