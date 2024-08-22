@@ -3,6 +3,10 @@ from django.core.files.storage import storages
 from django.utils.functional import LazyObject
 
 
+class VideoNotFoundError(Exception):
+    """Exception class for video not found error."""
+
+
 class ConfiguredStorage(LazyObject):
     """Lazy object for the video storage."""
 

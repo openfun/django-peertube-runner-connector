@@ -7,9 +7,8 @@ from django.test import TestCase
 import ffmpeg
 
 from django_peertube_runner_connector.factories import VideoFactory, VideoFileFactory
-from django_peertube_runner_connector.storage import video_storage
+from django_peertube_runner_connector.storage import VideoNotFoundError, video_storage
 from django_peertube_runner_connector.transcode import (
-    VideoNotFoundError,
     _process_transcoding,
     transcode_video,
 )

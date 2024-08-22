@@ -10,11 +10,8 @@ from rest_framework.response import Response
 
 from django_peertube_runner_connector.models import Video
 from django_peertube_runner_connector.serializers import RunnerJobSerializer
-from django_peertube_runner_connector.storage import video_storage
-from django_peertube_runner_connector.transcode import (
-    VideoNotFoundError,
-    transcode_video,
-)
+from django_peertube_runner_connector.storage import VideoNotFoundError, video_storage
+from django_peertube_runner_connector.transcode import transcode_video
 from django_peertube_runner_connector.utils.files import get_lower_case_extension
 
 
