@@ -7,9 +7,7 @@ from django_peertube_runner_connector.models import RunnerJob, RunnerJobState
 from django_peertube_runner_connector.utils.job_handlers.abstract_job_handler import (
     AbstractJobHandler,
 )
-from django_peertube_runner_connector.utils.job_handlers.utils import (
-    load_transcoding_runner_video,
-)
+from django_peertube_runner_connector.utils.job_handlers.utils import load_runner_video
 from django_peertube_runner_connector.utils.video_state import (
     move_to_failed_transcoding_state,
     move_to_next_state,
@@ -41,7 +39,7 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
         if next_state != RunnerJobState.ERRORED:
             return
 
-        video = load_transcoding_runner_video(runner_job)
+        video = load_runner_video(runner_job)
         if not video:
             return
 
@@ -53,7 +51,7 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
         Checking if all related video job info has been ended and if so,
         move it to its next state.
         """
-        video = load_transcoding_runner_video(runner_job)
+        video = load_runner_video(runner_job)
         if not video:
             return
 

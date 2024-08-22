@@ -9,7 +9,7 @@ from django_peertube_runner_connector.factories import (
     VideoJobInfoFactory,
 )
 from django_peertube_runner_connector.utils.job_handlers.utils import (
-    load_transcoding_runner_video,
+    load_runner_video,
     on_transcoding_ended,
 )
 
@@ -17,7 +17,7 @@ from django_peertube_runner_connector.utils.job_handlers.utils import (
 class TestJobHandlersUtils(TestCase):
     """Test the job handlers utils file."""
 
-    def test_load_transcoding_runner_video(self):
+    def test_load_runner_video(self):
         """Should be able to load a transcoding runner video from payload."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440002")
 
@@ -25,11 +25,11 @@ class TestJobHandlersUtils(TestCase):
             privatePayload={"videoUUID": "123e4567-e89b-12d3-a456-426655440002"}
         )
 
-        result = load_transcoding_runner_video(runner_job)
+        result = load_runner_video(runner_job)
 
         self.assertEqual(result, video)
 
-    def test_load_transcoding_runner_video_video_does_not_exist(self):
+    def test_load_runner_video_video_does_not_exist(self):
         """Should return None if the video does not exist."""
         VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440002")
 
@@ -37,7 +37,7 @@ class TestJobHandlersUtils(TestCase):
             privatePayload={"videoUUID": "123e4567-e89b-12d3-a456-426655440001"}
         )
 
-        result = load_transcoding_runner_video(runner_job)
+        result = load_runner_video(runner_job)
 
         self.assertIsNone(result)
 
