@@ -1,4 +1,4 @@
-"""Test the job creation file."""
+"""Test the transcoding job creation file."""
 from unittest.mock import Mock, call, patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -21,8 +21,8 @@ from django_peertube_runner_connector.utils.transcoding.job_creation import (
 from ...probe_response import probe_response
 
 
-class JobCreationTestCase(TestCase):
-    """Test the job creation utils file."""
+class TranscodingJobCreationTestCase(TestCase):
+    """Test the transcoding job creation utils file."""
 
     def setUp(self):
         """Create a video , a related video file and a file."""

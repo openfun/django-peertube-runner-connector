@@ -26,12 +26,13 @@ from .utils import load_runner_video, on_transcoding_ended
 
 logger = logging.getLogger(__name__)
 
-# https://github.com/Chocobozzz/PeerTube/blob/develop/server/server/lib/runners/job-handlers/vod-hls-transcoding-job-handler.ts
+# https://github.com/Chocobozzz/PeerTube/blob/develop/server/core/lib/runners/job-handlers/vod-hls-transcoding-job-handler.ts
 
 
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
     """Handler for vod hls transcoding jobs."""
 
+    # pylint: disable=arguments-differ
     def create(self, video: Video, resolution, fps, depends_on_runner_job, domain: str):
         job_uuid = uuid.uuid4()
 
