@@ -42,6 +42,13 @@ def generate_hls_video_filename(resolution: int, basename: str = None):
     return f"{basename}-{str(resolution)}-fragmented.mp4"
 
 
+def generate_transcription_filename(language: str, basename: str = None):
+    """Generate a filename for a transcription."""
+    basename = basename or str(uuid4())
+
+    return f"{basename}-{language}.vtt"
+
+
 def get_hls_resolution_playlist_filename(video_filename: str):
     """Return the hls resolution playlist filename."""
     return (
