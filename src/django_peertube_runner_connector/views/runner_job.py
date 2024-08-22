@@ -168,12 +168,18 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
 
         runner_job_handler = get_runner_job_handler_class(job)
 
-        result = {
-            "video_file": request.data.get("payload[videoFile]", None),
-            "resolution_playlist_file": request.data.get(
-                "payload[resolutionPlaylistFile]", None
-            ),
-        }
+        if "transcription" in job.type:
+            result = {
+                "inputLanguage": request.data.get("payload[inputLanguage]", None),
+                "vttFile": request.data.get("payload[vttFile]", None),
+            }
+        else:
+            result = {
+                "video_file": request.data.get("payload[videoFile]", None),
+                "resolution_playlist_file": request.data.get(
+                    "payload[resolutionPlaylistFile]", None
+                ),
+            }
 
         runner_job_handler().complete(runner_job=job, result_payload=result)
 

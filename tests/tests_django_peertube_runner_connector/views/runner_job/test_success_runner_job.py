@@ -126,3 +126,32 @@ class SuccessRunnerJobAPITest(TestCase):
                     self.video.streamingPlaylist.videoFiles.first().filename
                 )
             )
+
+    def test_success_transcript_job_with_a_valid_runner_token(self):
+        """Should be able to abort and reset the processing HLS job."""
+        vtt_file = SimpleUploadedFile(
+            "file.vtt", b"file_content", content_type="text/vtt"
+        )
+        runner_job = self.create_processing_job(RunnerJobType.VIDEO_TRANSCRIPTION)
+
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/success",
+            data={
+                "runnerToken": "runnerToken",
+                "payload[inputLanguage]": "fr",
+                "payload[vttFile]": vtt_file,
+            },
+        )
+        self.assertEqual(response.status_code, 204)
+
+        runner_job.refresh_from_db()
+        self.video.refresh_from_db()
+
+        self.assertEqual(runner_job.state, RunnerJobState.COMPLETED)
+        self.assertEqual(runner_job.failures, 0)  # should have been OK
+
+        vtt_file.seek(0)
+        self.assertEqual(
+            video_storage.open(self.video.transcriptFileName).read(), vtt_file.read()
+        )
+        self.assertEqual(self.video.language, "fr")

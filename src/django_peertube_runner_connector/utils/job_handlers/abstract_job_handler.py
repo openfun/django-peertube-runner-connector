@@ -14,7 +14,6 @@ from django_peertube_runner_connector.models import (
     RunnerJob,
     RunnerJobState,
     RunnerJobType,
-    Video,
 )
 from django_peertube_runner_connector.socket import send_available_jobs_ping_to_runners
 
@@ -28,7 +27,8 @@ class AbstractJobHandler(ABC):
     """Base class for job handlers."""
 
     @abstractmethod
-    def create(self, video: Video, resolution, fps, depends_on_runner_job, domain):
+    # pylint: disable=arguments-differ
+    def create(self, *args, **kwargs):
         """This method should be implemented by subclasses."""
 
     # pylint: disable=too-many-arguments

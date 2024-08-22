@@ -12,6 +12,7 @@ and this project adheres to
 ### Added
 
 - Add renovate configuration
+- Add transcription support
 
 ## [0.6.0] - 2023-12-22
 
