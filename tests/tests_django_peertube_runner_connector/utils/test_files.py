@@ -11,6 +11,7 @@ from django_peertube_runner_connector.utils.files import (
     build_new_file,
     generate_hls_master_playlist_filename,
     generate_hls_video_filename,
+    generate_transcription_filename,
     generate_web_video_filename,
     get_hls_resolution_playlist_filename,
     get_lower_case_extension,
@@ -60,6 +61,19 @@ class FilesTestCase(TestCase):
 
         # example: 46ce5659-e9e2-466c-9f11-a9a1674962c9-720-fragmented.mp4
         self.assertRegex(filename, rf"^{UUID_REGEX}-720-fragmented\.mp4$")
+
+    def test_generate_transcription_filename(self):
+        """Should generate a transcription filename with an uuid in it."""
+        filename = generate_transcription_filename("en")
+
+        # example: 46ce5659-e9e2-466c-9f11-a9a1674962c9-en.vtt
+        self.assertRegex(filename, rf"^{UUID_REGEX}-en\.vtt$")
+
+    def test_generate_transcription_filename_with_basename(self):
+        """Should generate a transcription filename with provided basename."""
+        filename = generate_transcription_filename("en", "test")
+
+        self.assertEqual(filename, "test-en.vtt")
 
     def test_get_hls_resolution_playlist_filename(self):
         """Should generate a hls resolution playlist (m3u8) corresponding to a fragmented file."""
