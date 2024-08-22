@@ -85,6 +85,7 @@ class RunnerJobType(models.TextChoices):
     VOD_AUDIO_MERGE_TRANSCODING = "vod-audio-merge-transcoding"
     LIVE_RTMP_HLS_TRANSCODING = "live-rtmp-hls-transcoding"
     VIDEO_STUDIO_TRANSCODING = "video-studio-transcoding"
+    VIDEO_TRANSCRIPTION = "video-transcription"
 
 
 class RunnerJobQuerySet(models.QuerySet):
@@ -176,6 +177,7 @@ class VideoJobInfoColumnType(models.TextChoices):
 
     PENDING_MOVE = "pendingMove"
     PENDING_TRANSCODE = "pendingTranscode"
+    PENDING_TRANSCRIPT = "pendingTranscript"
 
 
 class VideoState(models.IntegerChoices):
@@ -216,6 +218,15 @@ class Video(models.Model):
         null=True,
         blank=True,
         help_text="Thumbnail filename on the storage",
+    )
+    transcriptFileName = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Transcript filename on the storage",
+    )
+    language = models.CharField(
+        max_length=255, null=True, blank=True, help_text="Language of the video"
     )
     baseFilename = models.CharField(
         max_length=255,
@@ -280,6 +291,9 @@ class VideoJobInfo(models.Model):
     )
     pendingTranscode = models.IntegerField(
         default=0, help_text="Counter of pending transcoding operations"
+    )
+    pendingTranscript = models.IntegerField(
+        default=0, help_text="Counter of pending transcript operations"
     )
     video = models.OneToOneField(
         "Video",

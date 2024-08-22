@@ -93,6 +93,7 @@ class VideoJobInfoFactory(DjangoModelFactory):
 
     pendingMove = factory.Faker("random_int", min=0, max=10)
     pendingTranscode = factory.Faker("random_int", min=0, max=10)
+    pendingTranscript = factory.Faker("random_int", min=0, max=10)
     video = factory.SubFactory(VideoFactory)
 
 
