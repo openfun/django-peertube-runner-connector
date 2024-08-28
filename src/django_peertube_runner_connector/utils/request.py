@@ -1,4 +1,5 @@
 """Utils functions for request."""
+
 from __future__ import annotations
 
 import logging

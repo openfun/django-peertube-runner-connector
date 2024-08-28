@@ -1,4 +1,5 @@
 """Tests for the models of the django_peertube_runner_connector app"""
+
 from datetime import timedelta
 from unittest.mock import call, patch
 

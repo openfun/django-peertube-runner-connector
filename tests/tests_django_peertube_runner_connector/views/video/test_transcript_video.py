@@ -1,4 +1,5 @@
 """Tests for the Video transcript API."""
+
 from unittest.mock import patch
 
 from django.test import TestCase

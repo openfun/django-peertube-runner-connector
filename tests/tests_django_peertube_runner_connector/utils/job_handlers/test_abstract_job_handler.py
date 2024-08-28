@@ -1,4 +1,5 @@
 """Test the abstract job handler."""
+
 from datetime import timedelta
 from unittest.mock import Mock, call, patch
 

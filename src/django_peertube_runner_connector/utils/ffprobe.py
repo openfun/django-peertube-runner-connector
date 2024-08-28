@@ -1,4 +1,5 @@
 """FFprobe utils."""
+
 import logging
 
 import ffmpeg

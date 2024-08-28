@@ -1,4 +1,5 @@
 """Utils functions related to job handlers."""
+
 from __future__ import annotations
 
 import logging

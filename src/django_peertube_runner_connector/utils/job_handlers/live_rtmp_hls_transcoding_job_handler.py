@@ -1,4 +1,5 @@
 """Job handler for live rtmp hls transcoding jobs."""
+
 import logging
 
 from .abstract_job_handler import AbstractJobHandler

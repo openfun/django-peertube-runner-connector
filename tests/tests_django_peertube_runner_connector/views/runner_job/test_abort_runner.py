@@ -1,4 +1,5 @@
 """Tests for the Runner Job Abort API."""
+
 from datetime import datetime, timezone as tz
 from unittest.mock import patch
 

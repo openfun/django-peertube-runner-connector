@@ -1,4 +1,5 @@
 """Thumbnail utilities."""
+
 import tempfile
 
 import ffmpeg

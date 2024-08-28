@@ -1,4 +1,5 @@
 """Utils function related to resolutions."""
+
 from django.conf import settings
 
 from django_peertube_runner_connector.models import VideoResolution
