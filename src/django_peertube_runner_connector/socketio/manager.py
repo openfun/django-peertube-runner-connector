@@ -1,4 +1,5 @@
 """Module to manage a sentinel redis manager sor adyncio."""
+
 from django.conf import settings
 
 from redis.asyncio.sentinel import Sentinel

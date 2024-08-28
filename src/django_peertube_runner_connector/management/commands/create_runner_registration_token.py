@@ -1,4 +1,5 @@
 """ Management command to generate a new RunnerRegistrationToken."""
+
 import uuid
 
 from django.core.management.base import BaseCommand

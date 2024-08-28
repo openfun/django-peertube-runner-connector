@@ -1,4 +1,5 @@
 """Base function to start the transcription process."""
+
 import logging
 
 from django_peertube_runner_connector.models import Video

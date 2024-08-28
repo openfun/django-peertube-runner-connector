@@ -1,4 +1,5 @@
 """Serializers for the Django Peertube Runner Connector app."""
+
 from rest_framework import serializers
 
 from django_peertube_runner_connector.models import Runner, RunnerJob, RunnerJobState

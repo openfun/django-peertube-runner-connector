@@ -1,4 +1,5 @@
 """Job handler for transcription jobs."""
+
 import logging
 import uuid
 

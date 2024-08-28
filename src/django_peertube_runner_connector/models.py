@@ -1,4 +1,5 @@
 """Models for the django-peertube-runner-connector app."""
+
 from datetime import timedelta
 import logging
 from uuid import uuid4

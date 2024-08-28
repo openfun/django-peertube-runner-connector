@@ -1,4 +1,5 @@
 """Job handler for vod hls transcoding jobs."""
+
 from __future__ import annotations
 
 import logging

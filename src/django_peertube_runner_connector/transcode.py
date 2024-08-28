@@ -1,4 +1,5 @@
 """Base function to start the transcoding process."""
+
 import logging
 
 import ffmpeg

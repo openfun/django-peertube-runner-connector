@@ -1,4 +1,5 @@
 """Test the "thumbnail.py" utils file."""
+
 from unittest.mock import patch
 
 from django.test import TestCase

@@ -1,4 +1,5 @@
 """Admin of django-peertube-runner-connector app."""
+
 from django.contrib import admin
 
 from django_peertube_runner_connector.models import (

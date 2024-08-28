@@ -1,4 +1,5 @@
 """Test the transcription_job_handler."""
+
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile

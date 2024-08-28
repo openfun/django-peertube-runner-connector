@@ -1,4 +1,5 @@
 """Job creation transcription utils"""
+
 from django_peertube_runner_connector.models import Video
 from django_peertube_runner_connector.utils.job_handlers.transcription_job_handler import (
     TranscriptionJobHandler,

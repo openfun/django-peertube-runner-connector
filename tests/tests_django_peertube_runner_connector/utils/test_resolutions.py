@@ -1,4 +1,5 @@
 """Test the "resolutions.py" utils file."""
+
 from django.test import TestCase, override_settings
 
 from django_peertube_runner_connector.utils.resolutions import (

@@ -1,4 +1,5 @@
 """Tests for the Runner Job update API."""
+
 import logging
 
 from django.test import TestCase
