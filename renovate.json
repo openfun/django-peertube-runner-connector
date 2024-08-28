@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "github>openfun/renovate-configuration"
+  ],
+  "commitMessagePrefix": "⬆️(project)",
+  "commitMessageAction": "upgrade",
+  "commitBodyTable": true,
+  "ignoreDeps": [
+  ],
+  "dependencyDashboard": true
+}

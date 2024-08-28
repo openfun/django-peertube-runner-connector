@@ -14,4 +14,5 @@ exclude .gitlint
 exclude Makefile
 exclude lib/**
 exclude pylintrc
+exclude renovate.json
 exclude tox.ini
