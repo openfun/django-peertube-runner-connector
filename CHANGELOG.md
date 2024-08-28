@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Add renovate configuration
+
 ## [0.6.0] - 2023-12-22
 
 ### Added
