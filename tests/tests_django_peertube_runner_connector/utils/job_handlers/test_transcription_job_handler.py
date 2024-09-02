@@ -94,6 +94,30 @@ class TestTranscriptionJobHandler(TestCase):
         )
         self.assertEqual(self.video.jobInfo.pendingTranscript, 2)
 
+    def test_create_video_url(self):
+        """Should be able to create a VIDEO_TRANSCRIPTION runner job with a video url."""
+        handler = TranscriptionJobHandler()
+        runner_job = handler.create(self.video, "test_url", "video_url")
+
+        self.video.refresh_from_db()
+        self.assertEqual(runner_job.type, RunnerJobType.VIDEO_TRANSCRIPTION)
+        self.assertEqual(
+            runner_job.payload,
+            {
+                "input": {
+                    "videoFileUrl": "video_url",
+                },
+            },
+        )
+
+        self.assertEqual(
+            runner_job.privatePayload,
+            {
+                "videoUUID": str(self.video.uuid),
+            },
+        )
+        self.assertEqual(self.video.jobInfo.pendingTranscript, 2)
+
     @patch(
         "django_peertube_runner_connector.utils.job_handlers."
         "transcription_job_handler.on_transcription_ended"

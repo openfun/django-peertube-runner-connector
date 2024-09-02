@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Add a parameter to the transcode function to specify the source file
+
 ## [0.7.0] - 2024-08-28
 
 ### Added
