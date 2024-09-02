@@ -5,6 +5,9 @@ from django_peertube_runner_connector.utils.job_handlers.transcription_job_handl
 )
 
 
-def create_transcription_job(video: Video, domain: str):
+def create_transcription_job(video: Video, domain: str, video_url: str = None):
     """Create a transcription job for a video."""
-    TranscriptionJobHandler().create(video=video, domain=domain)
+    transcript_args = {"video": video, "domain": domain}
+    if video_url:
+        transcript_args["video_url"] = video_url
+    TranscriptionJobHandler().create(**transcript_args)

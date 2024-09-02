@@ -26,3 +26,22 @@ class TranscriptionJobCreationTestCase(TestCase):
         create_transcription_job(video=video, domain=domain)
 
         mocked_class.create.assert_called_with(video=video, domain=domain)
+
+    @patch(
+        "django_peertube_runner_connector.utils.transcription."
+        "job_creation.TranscriptionJobHandler"
+    )
+    def test_create_transcription_jobs_video_url(self, mock_job_handler):
+        """Should call TranscriptionJobHandler to create transcription jobs.
+        Should pass the video_url to the handler.
+        """
+        mocked_class = Mock()
+        mock_job_handler.return_value = mocked_class
+        video = VideoFactory()
+        domain = "example.com"
+
+        create_transcription_job(video=video, domain=domain, video_url="video_url")
+
+        mocked_class.create.assert_called_with(
+            video=video, domain=domain, video_url="video_url"
+        )

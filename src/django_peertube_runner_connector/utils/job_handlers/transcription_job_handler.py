@@ -65,7 +65,7 @@ class TranscriptionJobHandler(AbstractJobHandler):
         video.decrease_job_info(VideoJobInfoColumnType.PENDING_TRANSCRIPT)
 
     # pylint: disable=arguments-differ
-    def create(self, video: Video, domain: str):
+    def create(self, video: Video, domain: str, video_url: str = None):
         """Create a transcription job."""
         job_uuid = uuid.uuid4()
 
@@ -81,6 +81,9 @@ class TranscriptionJobHandler(AbstractJobHandler):
                 ),
             },
         }
+
+        if video_url:
+            payload["input"]["videoFileUrl"] = video_url
 
         private_payload = {
             "videoUUID": str(video.uuid),
