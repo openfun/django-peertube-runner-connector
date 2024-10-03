@@ -22,6 +22,7 @@ from .utils import (
     is_transcription_language_valid,
     load_runner_video,
     on_transcription_ended,
+    on_transcription_error,
 )
 
 
@@ -55,6 +56,7 @@ class TranscriptionJobHandler(AbstractJobHandler):
             return
 
         video.decrease_job_info(VideoJobInfoColumnType.PENDING_TRANSCRIPT)
+        on_transcription_error(video)
 
     def specific_cancel(self, runner_job: RunnerJob):
         """Cancel the runner job."""

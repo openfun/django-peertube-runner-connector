@@ -69,6 +69,21 @@ def on_transcription_ended(video: Video, language: str, vtt_path: str):
         logger.info("No transcription_ended callback defined for video %s.", video.uuid)
 
 
+def on_transcription_error(video: Video):
+    """Handle transcription error event."""
+
+    logger.error("Transcription error for %s.", video.uuid)
+
+    if callback_path := settings.TRANSCRIPTION_ERROR_CALLBACK_PATH:
+        try:
+            callback = import_string(callback_path)
+            callback(video)
+        except ImportError:
+            logger.info("Error importing transcription_error callback.")
+    else:
+        logger.info("No transcription_error callback defined for video %s.", video.uuid)
+
+
 # def on_vod_web_video_or_audio_merge_transcoding_job(
 #     video: Video, video_file_path, private_payload
 # ):
