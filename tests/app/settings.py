@@ -142,6 +142,7 @@ class Base(Configuration):
 
     TRANSCODING_ENDED_CALLBACK_PATH = values.Value("")
     TRANSCRIPTION_ENDED_CALLBACK_PATH = values.Value("")
+    TRANSCRIPTION_ERROR_CALLBACK_PATH = values.Value("")
 
     # Password validation
     # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

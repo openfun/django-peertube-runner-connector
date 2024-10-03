@@ -13,10 +13,12 @@ from django_peertube_runner_connector.utils.job_handlers.utils import (
     load_runner_video,
     on_transcoding_ended,
     on_transcription_ended,
+    on_transcription_error,
 )
 
 
 mock_transcription_ended_callback = Mock()
+mock_transcription_error_callback = Mock()
 
 
 class TestJobHandlersUtils(TestCase):
@@ -121,3 +123,32 @@ class TestJobHandlersUtils(TestCase):
         mock_logger.info.assert_called_once_with(
             "Transcription ended for %s.", str(video.uuid)
         )
+
+    @override_settings(
+        TRANSCRIPTION_ERROR_CALLBACK_PATH="tests_django_peertube_runner_connector."
+        "utils.job_handlers.test_utils.mock_transcription_error_callback"
+    )
+    @patch("django_peertube_runner_connector.utils.job_handlers.utils.logger")
+    def test_on_transcription_error(self, mock_logger):
+        """Should be able to handle transcription error event."""
+        video = VideoFactory()
+
+        on_transcription_error(video)
+
+        mock_transcription_error_callback.assert_called_once_with(video)
+        mock_logger.error.assert_called_once_with(
+            "Transcription error for %s.", str(video.uuid)
+        )
+
+    @override_settings(TRANSCRIPTION_ENDED_CALLBACK_PATH=None)
+    @patch("django_peertube_runner_connector.utils.job_handlers.utils.logger")
+    def test_on_transcription_error_no_callback(self, mock_logger):
+        """Should be able to handle transcription ended event without callback."""
+        video = VideoFactory()
+
+        on_transcription_error(video)
+
+        mock_logger.info.assert_called_with(
+            "No transcription_error callback defined for video %s.", str(video.uuid)
+        )
+        mock_transcription_ended_callback.assert_not_called()

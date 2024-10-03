@@ -45,8 +45,12 @@ class TestTranscriptionJobHandler(TestCase):
             priority=0,
         )
 
-    def test_specific_error(self):
-        """Should decrease pendingTranscript."""
+    @patch(
+        "django_peertube_runner_connector.utils.job_handlers."
+        "transcription_job_handler.on_transcription_error"
+    )
+    def test_specific_error(self, mock_on_transcription_error):
+        """Should decrease pendingTranscript and call on_transcription_error."""
         handler = TranscriptionJobHandler()
 
         handler.specific_error(
@@ -57,6 +61,7 @@ class TestTranscriptionJobHandler(TestCase):
 
         self.job_info.refresh_from_db()
         self.assertEqual(self.job_info.pendingTranscript, 0)
+        mock_on_transcription_error.assert_called_once_with(self.video)
 
     def test_specific_cancel(self):
         """Should decrease pendingTranscript."""
