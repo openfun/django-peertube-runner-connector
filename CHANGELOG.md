@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.9.0] - 2024-10-08
+
 ### Added
 
 - Allow to search the job uuid in the admin
@@ -16,7 +18,6 @@ and this project adheres to
 ### Fixed
 
 - Fix concurrency when runners accepts the same job
-
 
 ## [0.8.0] - 2024-09-05
 
@@ -90,7 +91,8 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.8.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.9.0...main
+[0.9.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.5.0...v0.6.0
