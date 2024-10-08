@@ -1,4 +1,5 @@
 """Functions to update HLS playlists file (.m3u8) of a video."""
+
 from __future__ import annotations
 
 import logging

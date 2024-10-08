@@ -1,4 +1,5 @@
 """Tests for the "transcript.py" file of the django_peertube_runner_connector app"""
+
 from unittest.mock import patch
 
 from django.test import TestCase

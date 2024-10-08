@@ -1,4 +1,5 @@
 """Job handler for vod web video transcoding jobs."""
+
 import logging
 
 from .abstract_vod_transcoding_job_handler import AbstractVODTranscodingJobHandler

@@ -1,4 +1,5 @@
 """Factories for the django-peertube-runner-connector app."""
+
 from django.utils import timezone
 
 import factory

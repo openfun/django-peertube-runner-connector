@@ -1,4 +1,5 @@
 """Base class for job handlers."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -49,9 +50,11 @@ class AbstractJobHandler(ABC):
             payload=payload,
             privatePayload=private_payload,
             uuid=job_uuid,
-            state=RunnerJobState.WAITING_FOR_PARENT_JOB
-            if depends_on_runner_job
-            else RunnerJobState.PENDING,
+            state=(
+                RunnerJobState.WAITING_FOR_PARENT_JOB
+                if depends_on_runner_job
+                else RunnerJobState.PENDING
+            ),
             dependsOnRunnerJob=depends_on_runner_job,
             priority=priority,
         )

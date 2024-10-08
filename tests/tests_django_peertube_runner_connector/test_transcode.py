@@ -1,4 +1,5 @@
 """Tests for the "transcode.py" file of the django_peertube_runner_connector app"""
+
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile

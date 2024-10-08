@@ -1,4 +1,5 @@
 """Job creation transcoding utils"""
+
 import logging
 
 from django.conf import settings

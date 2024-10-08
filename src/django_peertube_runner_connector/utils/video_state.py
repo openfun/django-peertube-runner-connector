@@ -1,4 +1,5 @@
 """Utils functions to handle video states."""
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """Test the abstract_vod_transcoding_job_handler."""
+
 from unittest.mock import patch
 
 from django.test import TestCase

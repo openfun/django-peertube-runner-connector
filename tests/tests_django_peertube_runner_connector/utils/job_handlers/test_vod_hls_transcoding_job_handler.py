@@ -1,4 +1,5 @@
 """Tests for the vod hls transcoding job handler."""
+
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile

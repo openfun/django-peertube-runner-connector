@@ -1,4 +1,5 @@
 """Test the transcoding job creation file."""
+
 from unittest.mock import Mock, call, patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile

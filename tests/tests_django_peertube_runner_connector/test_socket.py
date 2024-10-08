@@ -1,4 +1,5 @@
 """Tests for the "socket.py" file of the django_peertube_runner_connector app"""
+
 from unittest import mock
 
 from django.test import TestCase, override_settings

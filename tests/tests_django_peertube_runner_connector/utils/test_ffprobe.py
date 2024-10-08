@@ -1,4 +1,5 @@
 """Test the "ffprobe.py" utils file."""
+
 from django.test import TestCase
 
 from tests_django_peertube_runner_connector.probe_response import probe_response

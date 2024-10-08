@@ -1,4 +1,5 @@
 """Tests for the video upload API."""
+
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile

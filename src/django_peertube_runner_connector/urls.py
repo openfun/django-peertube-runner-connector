@@ -1,4 +1,5 @@
 """django-peertube-runner-connector URL configuration"""
+
 from django.urls import include, re_path
 
 from rest_framework import routers

@@ -1,4 +1,5 @@
 """Test the "files.py" utils file."""
+
 from unittest import mock
 
 from django.core.files.uploadedfile import SimpleUploadedFile

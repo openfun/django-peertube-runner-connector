@@ -1,4 +1,5 @@
 """Video storage for the Django Peertube Runner Connector app."""
+
 from django.core.files.storage import storages
 from django.utils.functional import LazyObject
 

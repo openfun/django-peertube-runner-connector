@@ -1,4 +1,5 @@
 """Marsha forms module."""
+
 from django.forms import CharField, ModelForm
 
 from django_peertube_runner_connector.models import Runner

@@ -1,4 +1,5 @@
 """Utils functions to retrieve class job handler ."""
+
 from __future__ import annotations
 
 import logging

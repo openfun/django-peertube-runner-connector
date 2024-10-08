@@ -1,4 +1,5 @@
 """SocketIO server for the Django Peertube Runner Connector app."""
+
 import logging
 
 from asgiref.sync import sync_to_async

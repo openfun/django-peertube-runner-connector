@@ -1,4 +1,5 @@
 """Tests for the Runner unregister API."""
+
 from django.test import TestCase
 
 from django_peertube_runner_connector.factories import RunnerFactory

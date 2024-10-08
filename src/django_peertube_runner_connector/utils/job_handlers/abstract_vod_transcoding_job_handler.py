@@ -1,4 +1,5 @@
 """Base class for VOD transcoding job handlers."""
+
 from __future__ import annotations
 
 import logging

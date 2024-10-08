@@ -1,4 +1,5 @@
 """Test the storage file."""
+
 import tempfile
 
 from django.core.files.uploadedfile import SimpleUploadedFile

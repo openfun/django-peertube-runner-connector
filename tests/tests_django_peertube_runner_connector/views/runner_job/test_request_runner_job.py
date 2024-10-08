@@ -1,4 +1,5 @@
 """Tests for the Runner Job request API."""
+
 from django.test import TestCase
 
 from django_peertube_runner_connector.factories import RunnerFactory, RunnerJobFactory

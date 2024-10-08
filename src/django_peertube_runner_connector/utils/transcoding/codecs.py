@@ -1,4 +1,5 @@
 """Codecs utils."""
+
 import logging
 
 from django_peertube_runner_connector.utils.ffprobe import (
