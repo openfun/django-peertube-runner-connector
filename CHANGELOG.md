@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix concurrency when runners accepts the same job
+
 ## [0.8.0] - 2024-09-05
 
 ### Added

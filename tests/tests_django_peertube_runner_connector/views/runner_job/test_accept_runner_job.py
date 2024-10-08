@@ -21,8 +21,11 @@ class AcceptRunnerJobAPITest(TestCase):
     def setUp(self):
         """Create a runner and a related runner job."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
+        self.other_runner = RunnerFactory(
+            name="Other Runner", runnerToken="otherRunnerToken"
+        )
         self.runner_job = RunnerJobFactory(
-            runner=self.runner,
+            runner=None,
             type="vod-hls-transcoding",
             uuid="02404b18-3c50-4929-af61-913f4df65e00",
             payload={"foo": "bar"},
@@ -63,7 +66,15 @@ class AcceptRunnerJobAPITest(TestCase):
                 },
             )
 
+            other_response = self.client.post(
+                "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/accept",
+                data={
+                    "runnerToken": "otherRunnerToken",
+                },
+            )
+
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(other_response.status_code, 409)
         self.runner_job.refresh_from_db()
 
         self.assertEqual(
