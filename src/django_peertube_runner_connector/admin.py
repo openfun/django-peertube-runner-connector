@@ -57,7 +57,7 @@ class RunnerJobAdmin(admin.ModelAdmin):
         "updatedAt",
     )
 
-    search_fields = ("type", "state")
+    search_fields = ("type", "state", "uuid")
     list_filter = ("type", "state")
 
 

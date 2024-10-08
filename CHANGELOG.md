@@ -9,9 +9,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Allow to search the job uuid in the admin
+
 ### Fixed
 
 - Fix concurrency when runners accepts the same job
+
 
 ## [0.8.0] - 2024-09-05
 
