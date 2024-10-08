@@ -80,13 +80,17 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
         """Endpoint attributing a job to a runner."""
         runner = self._get_runner_from_token(request)
         job = self._get_job_from_uuid(uuid)
-        if job.state != RunnerJobState.PENDING:
+        updated_rows = RunnerJob.objects.filter(
+            uuid=uuid, state=RunnerJobState.PENDING
+        ).update(state=RunnerJobState.PROCESSING)
+
+        if updated_rows == 0:
             return Response(
                 "This job is not in pending state anymore",
                 status=status.HTTP_409_CONFLICT,
             )
 
-        job.state = RunnerJobState.PROCESSING
+        job.refresh_from_db()
         job.processingJobToken = "ptrjt-" + str(uuid4())
         job.startedAt = timezone.now()
         job.runner = runner
