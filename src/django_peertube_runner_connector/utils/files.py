@@ -7,7 +7,12 @@ from uuid import uuid4
 
 import ffmpeg
 
-from django_peertube_runner_connector.models import Video, VideoFile, VideoResolution
+from django_peertube_runner_connector.models import (
+    Video,
+    VideoFile,
+    VideoJobInfo,
+    VideoResolution,
+)
 from django_peertube_runner_connector.storage import video_storage
 
 from .ffprobe import (
@@ -94,3 +99,27 @@ def build_new_file(video: Video, filename: str, existing_probe=None):
     )
 
     return video_file
+
+
+def delete_temp_file(video: Video, filename: str):
+    """Delete a temporary file."""
+    # check if the temp file is still needed by a transcoding job
+    if VideoJobInfo.objects.filter(video=video, pendingTranscode__gt=0).exists():
+        return
+
+    try:
+        temp_video_file = VideoFile.objects.get(
+            video=video,
+            streamingPlaylist=None,
+            extname="",
+            filename=filename,
+        )
+
+        temp_video_file.remove_web_video_file()
+        temp_video_file.delete()
+    except VideoFile.DoesNotExist:
+        logger.warning(
+            "No video file found for video %s with filename %s",
+            video.id,
+            filename,
+        )
