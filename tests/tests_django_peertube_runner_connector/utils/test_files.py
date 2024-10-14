@@ -1,15 +1,22 @@
 """Test the "files.py" utils file."""
 
 from unittest import mock
+from unittest.mock import patch
+import uuid
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-from django_peertube_runner_connector.factories import VideoFactory
-from django_peertube_runner_connector.models import VideoResolution
+from django_peertube_runner_connector.factories import (
+    VideoFactory,
+    VideoFileFactory,
+    VideoJobInfoFactory,
+)
+from django_peertube_runner_connector.models import VideoFile, VideoResolution
 from django_peertube_runner_connector.storage import video_storage
 from django_peertube_runner_connector.utils.files import (
     build_new_file,
+    delete_temp_file,
     generate_hls_master_playlist_filename,
     generate_hls_video_filename,
     generate_transcription_filename,
@@ -175,3 +182,56 @@ class FilesTestCase(TestCase):
         self.assertEqual(video_file.resolution, VideoResolution.H_NOVIDEO)
         self.assertEqual(video_file.fps, -1)
         self.assertEqual(video_file.video, self.video)
+
+    @patch("django_peertube_runner_connector.models.video_storage")
+    def test_delete_temp_file_pending_transcode_job(self, mock_storage):
+        """Should delete a temporary file."""
+        original_video_id = str(uuid.uuid4())
+        uploaded_on = "1698941501"
+        filename = f"tmp/{original_video_id}/video/{uploaded_on}"
+        temp_video_file = VideoFileFactory(
+            video=self.video, streamingPlaylist=None, extname="", filename=filename
+        )
+        VideoJobInfoFactory(video=self.video, pendingTranscode=1)
+
+        delete_temp_file(self.video, filename)
+
+        mock_storage.delete.assert_not_called()
+        self.assertTrue(VideoFile.objects.filter(id=temp_video_file.id).exists())
+
+    @patch("django_peertube_runner_connector.models.video_storage")
+    def test_delete_temp_file_no_pending_transcode_job(self, mock_storage):
+        """Should delete a temporary file."""
+        original_video_id = str(uuid.uuid4())
+        uploaded_on = "1698941501"
+        filename = f"tmp/{original_video_id}/video/{uploaded_on}"
+        temp_video_file = VideoFileFactory(
+            video=self.video,
+            streamingPlaylist=None,
+            extname="",
+            filename=filename,
+        )
+        VideoJobInfoFactory(video=self.video, pendingTranscode=0)
+
+        delete_temp_file(self.video, filename)
+
+        mock_storage.delete.assert_called_once_with(filename)
+        self.assertFalse(VideoFile.objects.filter(id=temp_video_file.id).exists())
+
+    @patch("django_peertube_runner_connector.utils.files.logger")
+    @patch("django_peertube_runner_connector.models.video_storage")
+    def test_delete_temp_file_no_video_file(self, mock_storage, mock_logger):
+        """Should not raise an error if the video file does not exist."""
+        original_video_id = str(uuid.uuid4())
+        uploaded_on = "1698941501"
+        filename = f"tmp/{original_video_id}/video/{uploaded_on}"
+        VideoJobInfoFactory(video=self.video, pendingTranscode=0)
+
+        delete_temp_file(self.video, filename)
+
+        mock_storage.delete.assert_not_called()
+        mock_logger.warning.assert_called_once_with(
+            "No video file found for video %s with filename %s",
+            self.video.id,
+            filename,
+        )
