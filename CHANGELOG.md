@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Add a function to delete temporary video files
+
 ## [0.9.0] - 2024-10-08
 
 ### Added
