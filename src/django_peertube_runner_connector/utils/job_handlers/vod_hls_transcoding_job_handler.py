@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
     """Handler for vod hls transcoding jobs."""
 
-    # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ,too-many-positional-arguments
     def create(self, video: Video, resolution, fps, depends_on_runner_job, domain: str):
         job_uuid = uuid.uuid4()
 

@@ -57,6 +57,7 @@ class TestTranscode(TestCase):
     @patch("django_peertube_runner_connector.transcode.get_video_stream_duration")
     @patch("django_peertube_runner_connector.transcode.build_video_thumbnails")
     @patch("django_peertube_runner_connector.transcode.create_transcoding_jobs")
+    # pylint: disable=too-many-positional-arguments
     def test_process_transcoding(
         self, mock_transcoding, mock_thumbnails, mock_duration, mock_build, mock_probe
     ):

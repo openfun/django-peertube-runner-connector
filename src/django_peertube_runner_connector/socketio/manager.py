@@ -69,6 +69,7 @@ class AsyncSentinelRedisManager(AsyncRedisManager):
 
     name = "aioredis"
 
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         sentinels=None,

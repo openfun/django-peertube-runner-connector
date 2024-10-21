@@ -72,6 +72,7 @@ def get_closest_framerate_standard(fps, fps_setting):
     return sorted(setting_transcoding[fps_setting], key=lambda x: fps % x)[0]
 
 
+# pylint: disable=too-many-positional-arguments
 def build_lower_resolution_job_payloads(
     video: Video,
     input_video_resolution,
