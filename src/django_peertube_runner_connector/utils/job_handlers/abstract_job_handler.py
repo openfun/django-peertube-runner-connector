@@ -32,7 +32,7 @@ class AbstractJobHandler(ABC):
     def create(self, *args, **kwargs):
         """This method should be implemented by subclasses."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def create_runner_job(
         self,
         domain: str,

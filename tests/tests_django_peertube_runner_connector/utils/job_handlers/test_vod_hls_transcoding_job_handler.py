@@ -93,6 +93,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         "django_peertube_runner_connector.utils.job_handlers."
         "vod_hls_transcoding_job_handler.generate_hls_video_filename",
     )
+    # pylint: disable=too-many-positional-arguments
     def test_specific_complete(
         self,
         mock_generate_hls,
