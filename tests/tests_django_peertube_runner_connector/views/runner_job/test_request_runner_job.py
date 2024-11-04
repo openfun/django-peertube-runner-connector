@@ -17,17 +17,17 @@ class RequestRunnerJobAPITest(TestCase):
 
     def setUp(self):
         """Create 40 runners job (half in processing) and 1 related runner."""
-        runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
+        self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         for i in range(20):
             # These jobs should not appear in the requested list
             RunnerJobFactory(
-                runner=runner,
+                runner=self.runner,
                 type="vod-hls-transcoding",
                 state=RunnerJobState.PROCESSING,
             )
             # These jobs should appear in the requested list
             RunnerJobFactory(
-                runner=runner,
+                runner=self.runner,
                 state=RunnerJobState.PENDING,
                 type="vod-hls-transcoding",
                 uuid=f"02404b18-3c50-4929-af61-913f4df65e{i:02d}",
@@ -111,6 +111,99 @@ class RequestRunnerJobAPITest(TestCase):
                     "payload": {"foo": "bar"},
                     "type": "vod-hls-transcoding",
                     "uuid": "02404b18-3c50-4929-af61-913f4df65e09",
+                },
+            ],
+        )
+
+    def test_request_with_a_specified_job_type(self):
+        """Should be able to request the 10 first available jobs of given types."""
+        job_with_other_type = RunnerJobFactory(
+            runner=self.runner,
+            state=RunnerJobState.PENDING,
+            priority=0,
+            type="video-transcription",
+            payload={"foo": "bar"},
+        )
+        job_with_same_type = RunnerJobFactory(
+            runner=self.runner,
+            state=RunnerJobState.PENDING,
+            priority=0,
+            type="vod-hls-transcoding",
+            payload={"foo": "bar"},
+        )
+        RunnerJobFactory(
+            runner=self.runner,
+            state=RunnerJobState.PENDING,
+            priority=0,
+            type="video-studio-transcoding",
+            payload={"foo": "bar"},
+        )
+
+        response = self.client.post(
+            "/api/v1/runners/jobs/request",
+            data={
+                "runnerToken": "runnerToken",
+                "jobTypes": ["vod-hls-transcoding", "video-transcription"],
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.json()["availableJobs"]), 10)
+
+        self.assertEqual(
+            response.json()["availableJobs"],
+            [
+                {
+                    "payload": job_with_other_type.payload,
+                    "type": job_with_other_type.type,
+                    "uuid": job_with_other_type.uuid,
+                },
+                {
+                    "payload": job_with_same_type.payload,
+                    "type": job_with_same_type.type,
+                    "uuid": job_with_same_type.uuid,
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e00",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e01",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e02",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e03",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e04",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e05",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e06",
+                },
+                {
+                    "payload": {"foo": "bar"},
+                    "type": "vod-hls-transcoding",
+                    "uuid": "02404b18-3c50-4929-af61-913f4df65e07",
                 },
             ],
         )

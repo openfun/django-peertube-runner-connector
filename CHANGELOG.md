@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Adds a filter by type in available runner jobs
+
 ## [0.10.0] - 2024-10-17
 
 ### Added
