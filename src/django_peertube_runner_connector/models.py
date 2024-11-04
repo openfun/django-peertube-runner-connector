@@ -92,9 +92,12 @@ class RunnerJobType(models.TextChoices):
 class RunnerJobQuerySet(models.QuerySet):
     """Queryset for RunnerJob."""
 
-    def list_available_jobs(self):
+    def list_available_jobs(self, types=None):
         """List available jobs."""
-        return self.filter(state=RunnerJobState.PENDING).order_by("priority")[:10]
+        available_jobs = self.filter(state=RunnerJobState.PENDING)
+        if types:
+            available_jobs = available_jobs.filter(type__in=types)
+        return available_jobs.order_by("priority")[:10]
 
 
 class RunnerJob(models.Model):

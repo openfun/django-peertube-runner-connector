@@ -67,7 +67,7 @@ class RunnerJobViewSet(viewsets.GenericViewSet):
     def request_runner_job(self, request):
         """Endpoint returning a list of available jobs."""
         runner = self._get_runner_from_token(request)
-        jobs = RunnerJob.objects.list_available_jobs()
+        jobs = RunnerJob.objects.list_available_jobs(request.data.get("jobTypes"))
 
         runner.update_last_contact(get_client_ip(request))
 
