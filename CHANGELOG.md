@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Do no transcode in resolution higher than one enabled
+
 ## [0.11.0] - 2024-11-04
 
 ### Added

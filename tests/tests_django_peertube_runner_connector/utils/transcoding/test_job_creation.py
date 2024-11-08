@@ -10,7 +10,7 @@ from django_peertube_runner_connector.factories import (
     VideoFactory,
     VideoFileFactory,
 )
-from django_peertube_runner_connector.models import VideoResolution
+from django_peertube_runner_connector.models import RunnerJob, VideoResolution
 from django_peertube_runner_connector.storage import video_storage
 from django_peertube_runner_connector.utils.transcoding.job_creation import (
     build_lower_resolution_job_payloads,
@@ -103,37 +103,35 @@ class TranscodingJobCreationTestCase(TestCase):
         hd_standard_fps = get_closest_framerate_standard(fps, "HD_STANDARD")
         self.assertEqual(hd_standard_fps, 60)
 
-    @patch(
-        "django_peertube_runner_connector.utils.transcoding."
-        "job_creation.VODHLSTranscodingJobHandler"
+    @override_settings(
+        TRANSCODING_RESOLUTIONS_144P=False,
+        TRANSCODING_RESOLUTIONS_240P=False,
+        TRANSCODING_RESOLUTIONS_360P=True,
+        TRANSCODING_RESOLUTIONS_480P=True,
+        TRANSCODING_RESOLUTIONS_720P=False,
+        TRANSCODING_RESOLUTIONS_1080P=False,
+        TRANSCODING_RESOLUTIONS_1440P=False,
+        TRANSCODING_RESOLUTIONS_2160P=False,
     )
-    @patch(
-        "django_peertube_runner_connector.utils.transcoding."
-        "job_creation.build_lower_resolution_job_payloads"
-    )
-    def test_create_transcoding_jobs(self, mock_build_resolution, mock_job_handler):
-        """Should call VODHLSTranscodingJobHandler to create transcoding jobs."""
-        mocked_class = Mock()
-        mock_job_handler.return_value = mocked_class
-
+    def test_create_transcoding_jobs(self):
+        """Should create all runner jobs needed to transcode the video."""
+        self.assertEqual(RunnerJob.objects.count(), 0)
+        self.assertEqual(probe_response.get("streams")[0].get("height"), 540)
         create_transcoding_jobs(self.video, self.video_file, "domain", probe_response)
 
-        mocked_class.create.assert_called_with(
-            video=self.video,
-            resolution=540,
-            fps=30,
-            depends_on_runner_job=None,
-            domain="domain",
+        runner_jobs = RunnerJob.objects.all().order_by(
+            "createdAt", "dependsOnRunnerJob"
         )
 
-        mock_build_resolution.assert_called_with(
-            video=self.video,
-            input_video_resolution=540,
-            input_video_fps=30,
-            has_audio=True,
-            main_runner_job=mocked_class.create(),
-            domain="domain",
-        )
+        # First job does not depend on any other job
+        self.assertIsNone(runner_jobs[0].dependsOnRunnerJob)
+        self.assertEqual(runner_jobs[0].payload.get("output").get("resolution"), 480)
+
+        # Second job depends on the first job
+        self.assertEqual(runner_jobs[1].dependsOnRunnerJob, runner_jobs[0])
+        self.assertEqual(runner_jobs[1].payload.get("output").get("resolution"), 360)
+
+        self.assertEqual(len(runner_jobs), 2)
 
     @patch(
         "django_peertube_runner_connector.utils."

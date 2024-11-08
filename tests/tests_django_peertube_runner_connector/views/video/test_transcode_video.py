@@ -65,12 +65,12 @@ class TranscodeVideoAPITest(TestCase):
             )
             self.assertEqual(response.status_code, 200)
 
-            self.assertEqual(RunnerJob.objects.count(), 3)
+            self.assertEqual(RunnerJob.objects.count(), 2)
             self.assertEqual(
                 RunnerJob.objects.filter(
                     type=RunnerJobType.VOD_HLS_TRANSCODING
                 ).count(),
-                3,
+                2,
             )
             self.assertEqual(
                 RunnerJob.objects.filter(state=RunnerJobState.PENDING).count(), 1
@@ -79,7 +79,7 @@ class TranscodeVideoAPITest(TestCase):
                 RunnerJob.objects.filter(
                     state=RunnerJobState.WAITING_FOR_PARENT_JOB
                 ).count(),
-                2,
+                1,
             )
 
             list_dir, _ = video_storage.listdir("")

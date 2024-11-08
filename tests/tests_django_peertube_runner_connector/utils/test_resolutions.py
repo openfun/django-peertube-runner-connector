@@ -3,6 +3,7 @@
 from django.test import TestCase, override_settings
 
 from django_peertube_runner_connector.utils.resolutions import (
+    compute_max_resolution_to_transcode,
     compute_resolutions_to_transcode,
     is_odd,
     to_even,
@@ -69,3 +70,25 @@ class ResolutionsTestCase(TestCase):
             has_audio=False,
         )
         self.assertEqual(resolutions, [240, 360, 480, 720])
+
+    def test_compute_max_resolution_to_transcode(self):
+        """Should return the maximum resolution to transcode."""
+
+        # Max enabled resolution is 720. So for an input resolution higher than 720,
+        # the max resolution to transcode is 720.
+        resolution = compute_max_resolution_to_transcode(input_resolution=1080)
+        self.assertEqual(resolution, 720)
+
+        # Max enabled resolution is 720. So for an input resolution equal to 720,
+        resolution = compute_max_resolution_to_transcode(input_resolution=720)
+        self.assertEqual(resolution, 720)
+
+        # Max enabled resolution is 720 but the input resolution is 540. So the
+        # next lower should be used and it is 480.
+        resolution = compute_max_resolution_to_transcode(input_resolution=540)
+        self.assertEqual(resolution, 480)
+
+        # Max enabled resolution is 720, the input resolution is 480. 480 is an enabled
+        # resolution so it should be used
+        resolution = compute_max_resolution_to_transcode(input_resolution=480)
+        self.assertEqual(resolution, 480)
