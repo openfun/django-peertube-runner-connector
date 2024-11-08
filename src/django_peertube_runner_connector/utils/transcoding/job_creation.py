@@ -18,6 +18,7 @@ from django_peertube_runner_connector.utils.job_handlers.vod_hls_transcoding_job
     VODHLSTranscodingJobHandler,
 )
 from django_peertube_runner_connector.utils.resolutions import (
+    compute_max_resolution_to_transcode,
     compute_resolutions_to_transcode,
 )
 
@@ -127,7 +128,9 @@ def create_transcoding_jobs(
         else get_video_stream_fps(probe)
     )
 
-    max_resolution = DEFAULT_AUDIO_RESOLUTION if is_audio_file(probe) else resolution
+    max_resolution = compute_max_resolution_to_transcode(
+        DEFAULT_AUDIO_RESOLUTION if is_audio_file(probe) else resolution
+    )
 
     fps = compute_output_fps(input_fps, max_resolution)
 
