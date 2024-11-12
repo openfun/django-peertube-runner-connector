@@ -85,7 +85,9 @@ class TestTranscode(TestCase):
         mock_duration.assert_called_with(
             video_url, existing_probe=mock_probe.return_value
         )
-        mock_thumbnails.assert_called_with(video=video, video_file=video_file)
+        mock_thumbnails.assert_called_with(
+            video=video, video_file=video_file, existing_probe=mock_probe.return_value
+        )
         mock_transcoding.assert_called_with(
             video=video,
             video_file=video_file,
