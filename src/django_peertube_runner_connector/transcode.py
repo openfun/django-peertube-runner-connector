@@ -30,7 +30,9 @@ def _process_transcoding(video: Video, video_path: str, domain: str):
 
     video.duration = get_video_stream_duration(video_path, existing_probe=probe)
 
-    video.thumbnailFilename = build_video_thumbnails(video=video, video_file=video_file)
+    video.thumbnailFilename = build_video_thumbnails(
+        video=video, video_file=video_file, existing_probe=probe
+    )
     video.save()
 
     logger.info("Video at %s and uuid %s created.", video_path, video.uuid)

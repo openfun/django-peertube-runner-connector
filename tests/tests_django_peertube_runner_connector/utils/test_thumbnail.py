@@ -5,6 +5,10 @@ from unittest.mock import patch
 from django.test import TestCase
 
 import ffmpeg
+from tests_django_peertube_runner_connector.probe_response import (
+    probe_response,
+    probe_response_without_video_stream,
+)
 
 from django_peertube_runner_connector.factories import VideoFactory, VideoFileFactory
 from django_peertube_runner_connector.storage import video_storage
@@ -31,8 +35,21 @@ class ThumbnailTestCase(TestCase):
         thumbnail_filename = build_video_thumbnails(
             video=self.video,
             video_file=self.video_file,
+            existing_probe=probe_response,
         )
 
         mock_run.assert_called_once()
         self.assertEqual(thumbnail_filename, self.thumbnail_filename)
         self.assertTrue(video_storage.exists(thumbnail_filename))
+
+    @patch.object(ffmpeg, "run")
+    def test_build_video_thumbnails_with_no_video_stream(self, mock_run):
+        """Should create a thumbnail file."""
+        thumbnail_filename = build_video_thumbnails(
+            video=self.video,
+            video_file=self.video_file,
+            existing_probe=probe_response_without_video_stream,
+        )
+
+        mock_run.assert_not_called()
+        self.assertIsNone(thumbnail_filename)

@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Do not process thumbnail for video without video stream
+
 ## [0.12.0] - 2024-11-12
 
 ### Changed

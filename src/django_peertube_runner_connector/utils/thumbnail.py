@@ -7,12 +7,17 @@ import ffmpeg
 from django_peertube_runner_connector.models import Video, VideoFile
 from django_peertube_runner_connector.storage import video_storage
 
+from .ffprobe import get_video_stream
 from .files import get_video_directory
 
 
-def build_video_thumbnails(video=Video, video_file=VideoFile):
+def build_video_thumbnails(video=Video, video_file=VideoFile, existing_probe=None):
     """Create a video thumbnails with ffmpeg and save it to a file."""
     video_url = video_storage.url(video_file.filename)
+
+    if get_video_stream(video_url, existing_probe=existing_probe) is None:
+        return None
+
     thumbnail_filename = get_video_directory(video, "thumbnail.jpg")
 
     with tempfile.NamedTemporaryFile(suffix=".jpg") as temp_file:
