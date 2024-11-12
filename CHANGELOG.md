@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.12.0] - 2024-11-12
+
 ### Changed
 
 - Do no transcode in resolution higher than one enabled
@@ -107,7 +109,8 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.11.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.12.0...main
+[0.12.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.8.0...v0.9.0
