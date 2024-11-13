@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.12.1] - 2024-11-13
+
 ### Fixed
 
 - Do not process thumbnail for video without video stream
@@ -113,7 +115,8 @@ and this project adheres to
 - add django_peertube_runner_connector app
 - add basic quality tools + testing suite 
 
-[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.12.0...main
+[unreleased]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.12.1...main
+[0.12.1]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/openfun/django-peertube-runner-connector/compare/v0.9.0...v0.10.0
